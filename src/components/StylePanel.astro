@@ -8,96 +8,134 @@ const BTN_BASE =
 const BTN = `style-btn ${BTN_BASE}`;
 ---
 
-<div
-  class="style-btn-panel chrome--ns w-9 flex flex-col items-center rounded-lg bg-darkslate-500 border border-darkslate-400 shadow-lg overflow-hidden"
->
-  <button
-    id="style-panel-toggle"
-    class="style-btn w-full flex-1 min-h-9 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/5 transition-all duration-200 outline-none"
-    aria-label="Toggle style panel"
-    title="Styles"
-  >
-    <Icon
-      id="style-icon-sliders"
-      name="pixel-brush"
-      class="w-[17px] h-[17px]"
-    />
-    <svg
-      id="style-icon-arrow"
-      xmlns="http://www.w3.org/2000/svg"
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="2.5"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      class="hidden"
-    >
-      <polyline points="6,9 12,15 18,9"></polyline>
-    </svg>
-  </button>
-
+<div class="flex flex-col items-center gap-1">
   <div
-    id="style-btn-list"
-    class="w-full overflow-hidden"
-    style="max-height:0;transition:max-height 250ms ease"
+    id="language-switch"
+    role="group"
+    aria-label="Language"
+    class="chrome--ns flex items-center gap-1 rounded-lg bg-darkslate-500 border border-darkslate-400 px-1.5 py-1 shadow-lg text-xs"
   >
-    <div class="w-full h-px bg-white/5"></div>
-    {
-      STYLES.map(({ id, label }, i) => (
-        <button
-          class={BTN}
-          data-style={id}
-          data-label={label}
-          aria-label={`${label} style`}
-          title={label}
-        >
-          <StyleGlyph index={i} />
-          <span class="absolute top-1 right-1.5 text-4xs opacity-40 leading-none">
-            {i + 1}
-          </span>
-        </button>
-      ))
-    }
-
-    <div class="w-full h-px bg-white/5"></div>
+    <button type="button" data-locale="en" aria-pressed="true" class="language-option rounded px-1.5 py-0.5 text-white/60 hover:text-white transition-colors">EN</button>
+    <span aria-hidden="true" class="text-white/30">|</span>
+    <button type="button" data-locale="bn" aria-pressed="false" lang="bn" class="language-option rounded px-1.5 py-0.5 text-white/60 hover:text-white transition-colors">বাংলা</button>
+  </div>
+  <div
+    class="style-btn-panel chrome--ns w-9 flex flex-col items-center rounded-lg bg-darkslate-500 border border-darkslate-400 shadow-lg overflow-hidden"
+  >
     <button
-      id="border-toggle"
-      class={BTN_BASE}
-      aria-label="Toggle custom card border"
-      aria-pressed="false"
-      title="Custom card border"
+      id="style-panel-toggle"
+      class="style-btn w-full flex-1 min-h-9 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/5 transition-all duration-200 outline-none"
+      aria-label="Toggle style panel"
+      title="Styles"
     >
-      <svg
-        width="15"
-        height="15"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linejoin="round"
-      >
-        <path
-          d="M7 4h10a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3z"
-        ></path>
+      <Icon id="style-icon-sliders" name="pixel-brush" class="w-[17px] h-[17px]" />
+      <svg id="style-icon-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="hidden">
+        <polyline points="6,9 12,15 18,9"></polyline>
       </svg>
-      <span class="absolute top-1 right-1.5 text-4xs opacity-40 leading-none"
-        >B</span
-      >
     </button>
+
+    <div id="style-btn-list" class="w-full overflow-hidden" style="max-height:0;transition:max-height 250ms ease">
+      <div class="w-full h-px bg-white/5"></div>
+      {STYLES.map(({ id, label }, i) => (
+        <button class={BTN} data-style={id} data-label={label} aria-label={`${label} style`} title={label}>
+          <StyleGlyph index={i} />
+          <span class="absolute top-1 right-1.5 text-4xs opacity-40 leading-none">{i + 1}</span>
+        </button>
+      ))}
+      <div class="w-full h-px bg-white/5"></div>
+      <button id="border-toggle" class={BTN_BASE} aria-label="Toggle custom card border" aria-pressed="false" title="Custom card border">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round">
+          <path d="M7 4h10a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3z"></path>
+        </svg>
+        <span class="absolute top-1 right-1.5 text-4xs opacity-40 leading-none">B</span>
+      </button>
+    </div>
   </div>
 </div>
 
 <script>
   import { CHIME, play } from "../lib/sound";
-  import {
-    applyAppearance,
-    BORDER_KEY,
-    isCustomBorder,
-    STYLES,
-  } from "../lib/appearance";
+  import { applyAppearance, BORDER_KEY, isCustomBorder, STYLES } from "../lib/appearance";
+  import { bn, en, LANGUAGE_STORAGE_KEY, type Locale } from "../i18n";
+
+  const homeEntries = Object.entries(en.home) as [keyof typeof en.home, string][];
+  const languageEntries = Object.entries(en.language) as [keyof typeof en.language, string][];
+  const translations = new Map<string, string>([
+    ...homeEntries.map(([key, value]) => [value, bn.home[key] as string] as [string, string]),
+    ...languageEntries.map(([key, value]) => [value, bn.language[key]] as [string, string]),
+  ]);
+  let locale: Locale = "en";
+  let translating = false;
+
+  function updateLanguageButtons() {
+    document.querySelectorAll<HTMLButtonElement>(".language-option").forEach((button) => {
+      const active = button.dataset.locale === locale;
+      button.setAttribute("aria-pressed", String(active));
+      button.classList.toggle("text-white", active);
+      button.classList.toggle("text-white/60", !active);
+    });
+  }
+
+  function translateDocument() {
+    translating = true;
+    document.documentElement.lang = locale === "bn" ? "bn" : "en";
+    document.documentElement.setAttribute("translate", "yes");
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    let node: Node | null;
+    while ((node = walker.nextNode())) {
+      const text = node.textContent;
+      if (!text?.trim()) continue;
+      const leading = text.match(/^\s*/)?.[0] ?? "";
+      const trailing = text.match(/\s*$/)?.[0] ?? "";
+      const value = text.trim();
+      const english = translations.has(value) ? value : [...translations].find(([, bnText]) => bnText === value)?.[0];
+      if (!english) continue;
+      node.textContent = `${leading}${locale === "bn" ? translations.get(english) : english}${trailing}`;
+    }
+
+    document.querySelectorAll<HTMLElement>("*").forEach((element) => {
+      for (const attribute of ["title", "aria-label", "placeholder", "alt"]) {
+        const value = element.getAttribute(attribute);
+        if (!value) continue;
+        const english = translations.has(value) ? value : [...translations].find(([, bnText]) => bnText === value)?.[0];
+        if (english) element.setAttribute(attribute, locale === "bn" ? translations.get(english)! : english);
+      }
+    });
+
+    const title = document.querySelector("title");
+    if (title) translateComposite(title, "textContent");
+    for (const selector of ['meta[name="description"]', 'meta[property="og:description"]', 'meta[property="og:title"]', 'meta[name="twitter:description"]', 'meta[name="twitter:title"]']) {
+      const meta = document.querySelector<HTMLMetaElement>(selector);
+      if (meta) translateComposite(meta, "content");
+    }
+    updateLanguageButtons();
+    translating = false;
+  }
+
+  function translateComposite(element: HTMLElement | HTMLMetaElement, property: "textContent" | "content") {
+    const current = property === "content" ? (element as HTMLMetaElement).content : element.textContent ?? "";
+    const replacements: Record<string, string> = {
+      "Design works": "ডিজাইনের কাজ",
+      "Blog": "ব্লগ",
+      "Guestbook": "অতিথি বই",
+      "Visited Countries": "ভ্রমণ করা দেশসমূহ",
+      "A collection of some of my design works": "আমার কিছু ডিজাইনের কাজের সংকলন",
+      "Leave a message in my guestbook": "আমার অতিথি বইয়ে একটি বার্তা লিখুন",
+      "Software developer with strong focus on the user experience animations and micro interactions": "ব্যবহারকারীর অভিজ্ঞতা, অ্যানিমেশন ও মাইক্রো-ইন্টারঅ্যাকশনে বিশেষ মনোযোগী সফটওয়্যার ডেভেলপার",
+    };
+    const english = Object.keys(replacements).find((value) => current.includes(value));
+    if (!english) return;
+    const translated = locale === "bn" ? current.replace(english, replacements[english]) : current.replace(replacements[english], english);
+    if (property === "content") (element as HTMLMetaElement).content = translated;
+    else element.textContent = translated;
+  }
+
+  function setLocale(next: Locale) {
+    locale = next;
+    try { localStorage.setItem(LANGUAGE_STORAGE_KEY, locale); } catch {}
+    translateDocument();
+    document.dispatchEvent(new CustomEvent("languagechange", { detail: { locale } }));
+  }
 
   function updateStyleBtns() {
     const saved = localStorage.getItem("portfolioStyle");
@@ -115,46 +153,24 @@ const BTN = `style-btn ${BTN_BASE}`;
     doc.documentElement.classList.toggle("cards-custom", custom);
     applyAppearance(doc.body);
     if (doc !== document) return;
-
     document.querySelectorAll<HTMLElement>(".style-btn").forEach((btn) => {
       if (!btn.dataset.style) return;
       btn.classList.toggle("opacity-40", custom);
-      btn.title = custom
-        ? `${btn.dataset.label} — switches off the custom border`
-        : (btn.dataset.label ?? "");
+      btn.title = custom ? `${btn.dataset.label} — switches off the custom border` : (btn.dataset.label ?? "");
     });
-
     const toggle = document.getElementById("border-toggle");
     toggle?.classList.toggle("text-white", custom);
     toggle?.classList.toggle("bg-white/10", custom);
     toggle?.setAttribute("aria-pressed", String(custom));
-    if (toggle)
-      toggle.title = custom
-        ? "Custom card border: on"
-        : "Custom card border: off";
+    if (toggle) toggle.title = custom ? "Custom card border: on" : "Custom card border: off";
   }
 
   function switchBorderMode() {
     const custom = !isCustomBorder();
     localStorage.setItem(BORDER_KEY, custom ? "custom" : "normal");
-
-    const settle = () => {
-      applyBorderMode();
-      updateStyleBtns();
-    };
-
-    if (
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
-      !document.querySelector(".card--ns")
-    ) {
-      settle();
-      return;
-    }
-
-    import("../lib/card-morph")
-      .then(({ morphCards }) => morphCards(custom))
-      .catch(() => {})
-      .finally(settle);
+    const settle = () => { applyBorderMode(); updateStyleBtns(); };
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || !document.querySelector(".card--ns")) { settle(); return; }
+    import("../lib/card-morph").then(({ morphCards }) => morphCards(custom)).catch(() => {}).finally(settle);
   }
 
   function setPanelOpen(open: boolean) {
@@ -173,33 +189,33 @@ const BTN = `style-btn ${BTN_BASE}`;
   });
 
   document.addEventListener("astro:page-load", () => {
+    try { locale = localStorage.getItem(LANGUAGE_STORAGE_KEY) === "bn" ? "bn" : "en"; } catch { locale = "en"; }
+    translateDocument();
     applyBorderMode();
     updateStyleBtns();
     setPanelOpen(false);
-
-    document.getElementById("border-toggle")?.addEventListener("click", () => {
-      switchBorderMode();
-      play(CHIME);
+    document.querySelectorAll<HTMLButtonElement>(".language-option").forEach((button) => {
+      button.addEventListener("click", () => setLocale(button.dataset.locale === "bn" ? "bn" : "en"));
     });
-
+    document.getElementById("border-toggle")?.addEventListener("click", () => { switchBorderMode(); play(CHIME); });
     document.querySelectorAll<HTMLElement>(".style-btn").forEach((btn) => {
       btn.addEventListener("click", () => {
         if (btn.id === "style-panel-toggle") return;
         localStorage.setItem("portfolioStyle", btn.dataset.style as string);
         play(CHIME);
         if (isCustomBorder()) return switchBorderMode();
-        applyBorderMode();
-        updateStyleBtns();
+        applyBorderMode(); updateStyleBtns();
       });
     });
-
-    document
-      .getElementById("style-panel-toggle")
-      ?.addEventListener("click", () => {
-        const list = document.getElementById("style-btn-list");
-        const isOpen =
-          list?.style.maxHeight !== "0px" && list?.style.maxHeight !== "0";
-        setPanelOpen(!isOpen);
-      });
+    document.getElementById("style-panel-toggle")?.addEventListener("click", () => {
+      const list = document.getElementById("style-btn-list");
+      const isOpen = list?.style.maxHeight !== "0px" && list?.style.maxHeight !== "0";
+      setPanelOpen(!isOpen);
+    });
   });
+
+  const observer = new MutationObserver((mutations) => {
+    if (!translating && mutations.some((mutation) => mutation.type === "childList" || mutation.type === "characterData")) translateDocument();
+  });
+  observer.observe(document.body, { childList: true, characterData: true, subtree: true });
 </script>
