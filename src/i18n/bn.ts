@@ -22,6 +22,10 @@ export const bn: TranslationCatalog = {
     navigation: "নেভিগেশন", skills: "দক্ষতা", experienceHeading: "অভিজ্ঞতা", contact: "যোগাযোগ", author: "লেখক", sendLove: "ভালোবাসা পাঠান",
     defaultStyle: "ডিফল্ট", glassStyle: "কাচের মতো", sharpStyle: "তীক্ষ্ণ", neonStyle: "নিয়ন", borderOn: "কার্ডের কাস্টম বর্ডার: চালু", borderOff: "কার্ডের কাস্টম বর্ডার: বন্ধ", switchesBorder: "কাস্টম বর্ডার বন্ধ করে",
     zoomGlobe: "ঘোরাতে টানুন · জুম করতে স্ক্রল বা পিঞ্চ করুন", visited: "ভ্রমণ করা হয়েছে", explore: "ঘুরে দেখুন", readMore: "আরও পড়ুন", close: "বন্ধ করুন", noPosts: "কোনো লেখা পাওয়া যায়নি।",
+    ownerLogin: "মালিকের লগইন", loggedIn: "আপনি লগ ইন করেছেন", loggedInDescription: "এই ব্রাউজারে অতিথি বইয়ের উত্তর দেওয়ার ফর্ম দেখা যাচ্ছে।", loginDescription: "অতিথি বইয়ের বার্তার উত্তর দিতে লগ ইন করুন।", logout: "লগ আউট", secret: "গোপন কোড", secretError: "গোপন কোডটি মেলেনি। আবার চেষ্টা করুন।", login: "লগ ইন",
+    replyRequired: "বার্তা আবশ্যক", nameMessageRequired: "নাম ও বার্তা আবশ্যক", submitError: "পাঠানো যায়নি। আবার চেষ্টা করুন।", authorBadge: "লেখক", previousPage: "আগের পৃষ্ঠা", nextPage: "পরের পৃষ্ঠা",
+    esc: "বন্ধ করুন", timezoneCountry: "অবস্থান", countryLabel: "দেশ", timeFormat: "২৪ ঘণ্টা", github: "Github", medium: "Medium", dribbble: "Dribbble", behance: "Behance",
+    countryVisitedLabel: "যেস�� দেশ ভ্রমণ করেছি", technology: "প্রযুক্তি", openInNewTab: "নতুন ট্যাবে খুলুন", selectTheme: "{name} থিম নির্বাচন করুন",
   },
   seo: {
     designTitle: "ডিজাইনের কাজ", blogTitle: "ব্লগ", guestbookTitle: "অতিথি বই", travelTitle: "ভ্রমণ করা দেশসমূহ", playgroundTitle: "খেলার জায়গা",

@@ -20,6 +20,10 @@ export const en = {
     navigation: "Navigation", skills: "Skills", experienceHeading: "Experience", contact: "Contact", author: "Author", sendLove: "Send love",
     defaultStyle: "Default", glassStyle: "Glass", sharpStyle: "Sharp", neonStyle: "Neon", borderOn: "Custom card border: on", borderOff: "Custom card border: off", switchesBorder: "switches off the custom border",
     zoomGlobe: "Drag to rotate · scroll or pinch to zoom", visited: "Visited", explore: "Explore", readMore: "Read more", close: "Close", noPosts: "No posts found.",
+    ownerLogin: "Owner login", loggedIn: "You're logged in", loggedInDescription: "Reply forms are showing on the guestbook in this browser.", loginDescription: "Log in to reply to guestbook messages.", logout: "Log out", secret: "Secret", secretError: "That secret didn't match. Check it and try again.", login: "Log in",
+    replyRequired: "Message is required", nameMessageRequired: "Name and message are required", submitError: "Failed to submit. Please try again.", authorBadge: "Author", previousPage: "Previous page", nextPage: "Next page",
+    esc: "esc", timezoneCountry: "in", countryLabel: "Country", timeFormat: "24h", github: "Github", medium: "Medium", dribbble: "Dribbble", behance: "Behance",
+    countryVisitedLabel: "Countries I visited", technology: "Technology", openInNewTab: "Open in a new tab", selectTheme: "Select {name} theme",
   },
   seo: {
     designTitle: "Design works", blogTitle: "Blog", guestbookTitle: "Guestbook", travelTitle: "Visited Countries", playgroundTitle: "Playground",
