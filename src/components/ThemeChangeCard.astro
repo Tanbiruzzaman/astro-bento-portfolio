@@ -24,6 +24,7 @@ const SWATCH: Record<string, string> = {
             class={`theme-btn w-6 h-6 rounded-full transition-all duration-200 ${SWATCH[name]}`}
             data-theme={theme}
             aria-label={`${name} theme`}
+            data-i18n-attr={`aria-label:theme.${name}`}
           />
         ))
       }

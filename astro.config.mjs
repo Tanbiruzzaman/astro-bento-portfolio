@@ -59,6 +59,15 @@ export default defineConfig({
         ],
       },
     },
+    {
+      provider: fontProviders.google(),
+      name: "Noto Sans Bengali",
+      cssVariable: "--font-noto-sans-bengali",
+      display: "swap",
+      fallbacks: ["Nirmala UI", "Vrinda", "sans-serif"],
+      weights: [400, 500, 600, 700],
+      styles: ["normal"],
+    },
   ],
   site,
   integrations: [

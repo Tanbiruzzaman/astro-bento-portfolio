@@ -34,7 +34,7 @@ if (Astro.request.method === "POST") {
 const isAdmin = isGuestbookAdmin(Astro.cookies);
 ---
 
-<Layout title="Guestbook login" description="Guestbook login" noindex>
+<Layout title="Guestbook login" description="Guestbook login" titleBn="অতিথির খাতায় প্রবেশ" descriptionBn="অতিথির খাতায় প্রবেশ" noindex>
   <div class="flex flex-col items-center px-4 pt-8 pb-24">
     <div class="w-full max-w-3xl mb-16">
       <BackLink href="/guestbook" />
@@ -47,13 +47,13 @@ const isAdmin = isGuestbookAdmin(Astro.cookies);
         aria-hidden="true"
       />
       <h1 class="text-white text-3xl font-bold tracking-tight mb-3">
-        {isAdmin ? "You're logged in" : "Owner login"}
+        <span data-i18n={isAdmin ? "guestbook.loggedIn" : "guestbook.ownerLogin"}>{isAdmin ? "You're logged in" : "Owner login"}</span>
       </h1>
       <p class="text-darkslate-300 text-sm leading-relaxed">
         {
           isAdmin
-            ? "Reply forms are showing on the guestbook in this browser."
-            : "Log in to reply to guestbook messages."
+            ? <span data-i18n="guestbook.loggedInIntro">Reply forms are showing on the guestbook in this browser.</span>
+            : <span data-i18n="guestbook.loginIntro">Log in to reply to guestbook messages.</span>
         }
       </p>
     </header>
@@ -71,18 +71,17 @@ const isAdmin = isGuestbookAdmin(Astro.cookies);
               type="submit"
               class="px-3 py-1.5 rounded-md text-darkslate-300 hover:text-white hover:bg-darkslate-400/30 transition-colors text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-400"
             >
-              Log out
+              <span data-i18n="guestbook.logout">Log out</span>
             </button>
           </form>
         ) : (
           <form method="post" data-astro-reload class="flex flex-col gap-3">
             <label>
-              <span class="block text-xs text-darkslate-300 mb-1.5">
-                Secret
-              </span>
+              <span class="block text-xs text-darkslate-300 mb-1.5" data-i18n="guestbook.secret">Secret</span>
               <input
                 type="password"
                 name="secret"
+                id="secret"
                 required
                 autofocus
                 autocomplete="current-password"
@@ -93,12 +92,12 @@ const isAdmin = isGuestbookAdmin(Astro.cookies);
             </label>
             {hasError && (
               <p id="login-error" role="alert" class="text-red-400 text-xs">
-                That secret didn't match. Check it and try again.
+                <span data-i18n="guestbook.badSecret">That secret didn't match. Check it and try again.</span>
               </p>
             )}
             <div class="self-end">
               <Button type="submit" size="sm">
-                Log in
+                <span data-i18n="guestbook.login">Log in</span>
               </Button>
             </div>
           </form>

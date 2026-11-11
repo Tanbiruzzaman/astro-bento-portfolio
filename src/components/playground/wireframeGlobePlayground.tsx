@@ -1,5 +1,6 @@
 import { createSignal, type Component, type JSX } from "solid-js";
 import WireframeGlobe from "./wireframeGlobe";
+import { createLangSignal, t } from "../../i18n";
 
 const GLOBE_SIZE_PX = 420;
 
@@ -88,6 +89,7 @@ function settingBlock(label: string, control: JSX.Element, hint?: string) {
 }
 
 const WireframeGlobePlayground: Component = () => {
+  const lang = createLangSignal();
   const [latLines, setLatLines] = createSignal(DEFAULTS.latLines);
   const [lonLines, setLonLines] = createSignal(DEFAULTS.lonLines);
   const [tiltDeg, setTiltDeg] = createSignal(DEFAULTS.tiltDeg);
@@ -144,7 +146,7 @@ const WireframeGlobePlayground: Component = () => {
               Wireframe
             </h2>
             <p class="text-neutral-500 text-xs mt-0.5">
-              Canvas projection · drag-free preview
+              {t("playground.globe.canvasSubtitle", lang())}
             </p>
           </div>
           <button
@@ -152,16 +154,16 @@ const WireframeGlobePlayground: Component = () => {
             class="shrink-0 text-xs font-medium text-red-400 hover:text-red-300 border border-neutral-600 hover:border-neutral-500 rounded-lg px-2.5 py-1.5 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500/50"
             onClick={reset}
           >
-            Reset
+            {t("playground.globe.reset", lang())}
           </button>
         </div>
 
         <div class="p-5 space-y-8">
           <section>
-            {sectionTitle("Geometry")}
+            {sectionTitle(t("playground.globe.geometry", lang()))}
             <div class="space-y-5">
               <SliderField
-                label="Latitude lines"
+                label={t("playground.globe.latitude", lang())}
                 min={2}
                 max={32}
                 step={1}
@@ -169,7 +171,7 @@ const WireframeGlobePlayground: Component = () => {
                 onInput={setLatLines}
               />
               <SliderField
-                label="Longitude lines"
+                label={t("playground.globe.longitude", lang())}
                 min={2}
                 max={64}
                 step={1}
@@ -177,8 +179,8 @@ const WireframeGlobePlayground: Component = () => {
                 onInput={setLonLines}
               />
               <SliderField
-                label="Segments"
-                hint="Curve smoothness; higher is smoother but heavier."
+                label={t("playground.globe.segments", lang())}
+                hint={t("playground.globe.smoothness", lang())}
                 min={12}
                 max={120}
                 step={1}
@@ -186,7 +188,7 @@ const WireframeGlobePlayground: Component = () => {
                 onInput={setSegments}
               />
               <SliderField
-                label="Line width"
+                label={t("playground.globe.lineWidth", lang())}
                 min={0.2}
                 max={3}
                 step={0.1}
@@ -198,17 +200,17 @@ const WireframeGlobePlayground: Component = () => {
           </section>
 
           <section class="border-t border-neutral-700/50 pt-8">
-            {sectionTitle("Appearance")}
+            {sectionTitle(t("playground.globe.appearance", lang()))}
             <div class="space-y-5">
               {settingBlock(
-                "Line color",
+                t("playground.globe.lineColor", lang()),
                 <div class="flex flex-wrap items-center gap-2">
                   <input
                     type="color"
                     class="h-10 w-14 cursor-pointer rounded-lg border border-neutral-600 bg-neutral-800 p-1 shadow-inner focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500/50"
                     value={color()}
                     onInput={(e) => setColor(e.currentTarget.value)}
-                    aria-label="Pick line color"
+                    aria-label={t("playground.pickLineColor", lang())}
                   />
                   <input
                     type="text"
@@ -222,7 +224,7 @@ const WireframeGlobePlayground: Component = () => {
                 </div>,
               )}
               <SliderField
-                label="Front opacity"
+                label={t("playground.globe.frontOpacity", lang())}
                 min={0}
                 max={1}
                 step={0.05}
@@ -231,7 +233,7 @@ const WireframeGlobePlayground: Component = () => {
                 format={(v) => v.toFixed(2)}
               />
               <SliderField
-                label="Back opacity"
+                label={t("playground.globe.backOpacity", lang())}
                 min={0}
                 max={1}
                 step={0.05}
@@ -243,11 +245,11 @@ const WireframeGlobePlayground: Component = () => {
           </section>
 
           <section class="border-t border-neutral-700/50 pt-8">
-            {sectionTitle("Motion")}
+            {sectionTitle(t("playground.globe.motion", lang()))}
             <div class="space-y-5">
               <SliderField
-                label="Tilt"
-                hint="Rotation around X before projection."
+                label={t("playground.globe.tilt", lang())}
+                hint={t("playground.globe.tiltHint", lang())}
                 min={0}
                 max={90}
                 step={1}
@@ -256,8 +258,8 @@ const WireframeGlobePlayground: Component = () => {
                 format={(v) => `${v}°`}
               />
               <SliderField
-                label="Speed"
-                hint="Auto-rotation multiplier."
+                label={t("playground.globe.speed", lang())}
+                hint={t("playground.globe.speedHint", lang())}
                 min={0}
                 max={3}
                 step={0.05}
@@ -266,8 +268,8 @@ const WireframeGlobePlayground: Component = () => {
                 format={(v) => v.toFixed(2)}
               />
               <SliderField
-                label="Initial angle"
-                hint="Starting rotation; live while dragging."
+                label={t("playground.globe.initialAngle", lang())}
+                hint={t("playground.globe.initialAngleHint", lang())}
                 min={0}
                 max={360}
                 step={1}
@@ -276,7 +278,7 @@ const WireframeGlobePlayground: Component = () => {
                 format={(v) => `${v}°`}
               />
               {settingBlock(
-                "Auto rotate",
+                t("playground.globe.autoRotate", lang()),
                 <label class="inline-flex items-center gap-3 cursor-pointer select-none rounded-lg border border-neutral-600/80 bg-neutral-800/50 px-3 py-2.5 w-full sm:w-auto hover:bg-neutral-800/80 transition-colors has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-red-500/50">
                   <input
                     type="checkbox"
@@ -285,7 +287,7 @@ const WireframeGlobePlayground: Component = () => {
                     onChange={(e) => setAutoRotate(e.currentTarget.checked)}
                   />
                   <span class="text-sm text-neutral-200">
-                    Spin the globe continuously
+                    {t("playground.globe.spinContinuously", lang())}
                   </span>
                 </label>,
               )}

@@ -16,6 +16,9 @@ const showsAvatar = Astro.url.pathname.replace(/\/+$/, "") === "";
 
 const headBootstrap = `
   try {
+    var lang = localStorage.getItem("lang") === "bn" ? "bn" : "en";
+    document.documentElement.lang = lang;
+    document.documentElement.dataset.lang = lang;
     if ((localStorage.getItem("cardBorder") ?? "custom") === "custom")
       document.documentElement.classList.add("cards-custom");
     if (localStorage.getItem("companionEnabled") === "false")
@@ -49,6 +52,8 @@ interface Props {
   hideSoundToggle?: boolean;
   hideCompanion?: boolean;
   noindex?: boolean;
+  titleBn?: string;
+  descriptionBn?: string;
 }
 
 const {
@@ -59,6 +64,8 @@ const {
   hideSoundToggle,
   hideCompanion,
   noindex,
+  titleBn,
+  descriptionBn,
 } = Astro.props;
 const image = `${Astro.url.origin}/og-image.png`;
 
@@ -131,11 +138,12 @@ const schema =
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" data-title-en={title} data-title-bn={titleBn} data-description-en={description} data-description-bn={descriptionBn}>
   <head>
     <meta charset="UTF-8" />
     <Font cssVariable="--font-cabinet-grotesk" preload />
     <Font cssVariable="--font-satoshi" preload />
+    <Font cssVariable="--font-noto-sans-bengali" />
     <script is:inline set:html={headBootstrap} />
     <ClientRouter />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
@@ -219,13 +227,19 @@ const schema =
     <slot />
     {
       (!hideSoundToggle || !hideCompanion) && (
-        <div class="fixed bottom-4 right-4 md:bottom-6 z-50 flex flex-col items-center gap-2">
+        <div class="fixed top-4 right-4 md:top-6 z-50 flex flex-col items-center gap-2">
+          <div class="chrome--ns flex items-center justify-center gap-1 min-w-18 rounded-lg bg-darkslate-500 border border-darkslate-400 p-1 text-xs text-white shadow-lg" role="group" aria-label="Choose language" data-i18n-attr="aria-label:language.choose">
+            <button type="button" class="px-2 py-1 rounded hover:bg-white/10" data-set-lang="en" aria-pressed="true" lang="en">EN</button>
+            <span aria-hidden="true">|</span>
+            <button type="button" class="px-2 py-1 rounded hover:bg-white/10" data-set-lang="bn" aria-pressed="false">বাংলা</button>
+          </div>
           {!hideSoundToggle && <StylePanel />}
           {!hideCompanion && <AvatarCompanion />}
           {!hideSoundToggle && (
             <button
               id="sound-toggle"
               aria-label="Toggle sound"
+              data-i18n-attr="aria-label:controls.sound,title:controls.sound"
               title="Toggle sound"
               class="chrome--ns w-9 h-9 flex items-center justify-center rounded-lg bg-darkslate-500 border border-darkslate-400 hover:border-primary-500 transition-all duration-200 text-white shadow-lg"
             >
@@ -244,6 +258,7 @@ const schema =
 </html>
 
 <script>
+  import "../i18n";
   import { initNineSliceFallback } from "../lib/nine-slice-fallback";
   import { CARD_HOVER, play } from "../lib/sound";
   import { SITE } from "../site-config";

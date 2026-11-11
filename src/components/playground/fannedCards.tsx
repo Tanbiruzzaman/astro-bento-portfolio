@@ -1,6 +1,7 @@
 import { onMount, onCleanup, createSignal } from "solid-js";
 import { animate } from "motion";
 import { Pane } from "tweakpane";
+import { getLang, t } from "../../i18n";
 
 const EMBLEM_RATIO = 0.643;
 
@@ -157,29 +158,33 @@ const FannedCards = () => {
     document.addEventListener("grid:reveal-start", start);
     const fallback = setTimeout(start, 800);
 
-    const pane = new Pane({ title: "Fanned cards" });
-    pane.addBinding(PARAMS, "overscan", { min: 1, max: 3, step: 0.05 });
-    pane.addBinding(PARAMS, "scaleDuration", { min: 0.2, max: 2, step: 0.05 });
-    pane.addBinding(PARAMS, "fanRotation", { min: 0, max: 45, step: 1 });
-    pane.addBinding(PARAMS, "fanDuration", { min: 0.2, max: 2, step: 0.05 });
-    pane.addBinding(PARAMS, "fanDelay", { min: 0, max: 1.5, step: 0.05 });
-    const easing = pane.addFolder({ title: "Easing" });
-    easing.addBinding(PARAMS, "easeX1", { min: 0, max: 1, step: 0.01 });
-    easing.addBinding(PARAMS, "easeY1", { min: -1, max: 2, step: 0.01 });
-    easing.addBinding(PARAMS, "easeX2", { min: 0, max: 1, step: 0.01 });
-    easing.addBinding(PARAMS, "easeY2", { min: -1, max: 2, step: 0.01 });
-    pane
-      .addBinding(PARAMS, "hdr", { label: "Brightness glow" })
-      .on("change", (e) => setHdr(e.value));
-    pane
-      .addBinding(PARAMS, "hdrReal", { label: "Real HDR (AVIF)" })
-      .on("change", (e) => setHdrReal(e.value));
-    pane.addButton({ title: "Replay" }).on("click", animateIn);
+    let pane: Pane | undefined;
+    const buildPane = () => {
+      pane?.dispose();
+      const lang = getLang();
+      pane = new Pane({ title: t("playground.fannedPane", lang) });
+      pane.addBinding(PARAMS, "overscan", { label: t("playground.overscan", lang), min: 1, max: 3, step: 0.05 });
+      pane.addBinding(PARAMS, "scaleDuration", { label: t("playground.scaleDuration", lang), min: 0.2, max: 2, step: 0.05 });
+      pane.addBinding(PARAMS, "fanRotation", { label: t("playground.fanRotation", lang), min: 0, max: 45, step: 1 });
+      pane.addBinding(PARAMS, "fanDuration", { label: t("playground.fanDuration", lang), min: 0.2, max: 2, step: 0.05 });
+      pane.addBinding(PARAMS, "fanDelay", { label: t("playground.fanDelay", lang), min: 0, max: 1.5, step: 0.05 });
+      const easing = pane.addFolder({ title: t("playground.easing", lang) });
+      easing.addBinding(PARAMS, "easeX1", { label: t("playground.easeX1", lang), min: 0, max: 1, step: 0.01 });
+      easing.addBinding(PARAMS, "easeY1", { label: t("playground.easeY1", lang), min: -1, max: 2, step: 0.01 });
+      easing.addBinding(PARAMS, "easeX2", { label: t("playground.easeX2", lang), min: 0, max: 1, step: 0.01 });
+      easing.addBinding(PARAMS, "easeY2", { label: t("playground.easeY2", lang), min: -1, max: 2, step: 0.01 });
+      pane.addBinding(PARAMS, "hdr", { label: t("playground.brightnessGlow", lang) }).on("change", (e) => setHdr(e.value));
+      pane.addBinding(PARAMS, "hdrReal", { label: t("playground.realHdr", lang) }).on("change", (e) => setHdrReal(e.value));
+      pane.addButton({ title: t("playground.replay", lang) }).on("click", animateIn);
+    };
+    buildPane();
+    document.addEventListener("languagechange", buildPane);
 
     onCleanup(() => {
       document.removeEventListener("grid:reveal-start", start);
+      document.removeEventListener("languagechange", buildPane);
       clearTimeout(fallback);
-      pane.dispose();
+      pane?.dispose();
     });
   });
 

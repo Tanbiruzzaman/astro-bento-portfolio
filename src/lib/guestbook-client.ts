@@ -4,6 +4,7 @@ import {
   GUESTBOOK_NAME_CLASS,
   type GuestbookEntry,
 } from "./guestbook";
+import { getLang, t } from "../i18n";
 
 export type CreatedGuestbookEntry = Pick<
   GuestbookEntry,
@@ -67,18 +68,39 @@ export const createFormStatus = (form: HTMLFormElement) => {
   const submitButton = form.querySelector<HTMLButtonElement>(
     "button[type=submit]",
   );
-  const idleLabel = submitButton?.textContent?.trim() ?? "";
+  const labelElement = submitButton?.querySelector<HTMLElement>("[data-i18n]");
+  const labelKey = labelElement?.dataset.i18n ?? "guestbook.send";
+  const translateError = (message: string | null): string => {
+    if (!message) return "";
+    const keys: Record<string, Parameters<typeof t>[0]> = {
+      [GENERIC_ERROR_MESSAGE]: "guestbook.submitFailed",
+      "Failed to create guestbook entry": "guestbook.submitFailed",
+      "Failed to fetch guestbook entries": "guestbook.submitFailed",
+      "Name and message are required": "guestbook.formRequired",
+      "Message is required": "guestbook.messageRequired",
+      "Log in to reply": "guestbook.loginToReply",
+      "Invalid parentId": "guestbook.invalidParent",
+      "Message not found": "guestbook.messageNotFound",
+      "Replies can't be replied to": "guestbook.replyDepthError",
+      "Website must start with http:// or https://": "guestbook.websiteUrlError",
+    };
+    return keys[message] ? t(keys[message], getLang()) : message;
+  };
 
   return {
     showError: (errorMessage: string | null): void => {
       if (!errorElement) return;
-      errorElement.textContent = errorMessage ?? "";
+      errorElement.textContent = translateError(errorMessage);
       errorElement.classList.toggle("hidden", !errorMessage);
     },
     setSubmitting: (isSubmitting: boolean): void => {
       if (!submitButton) return;
       submitButton.disabled = isSubmitting;
-      submitButton.textContent = isSubmitting ? "Sending..." : idleLabel;
+      if (labelElement) {
+        labelElement.textContent = isSubmitting
+          ? t("common.sending", getLang())
+          : t(labelKey as Parameters<typeof t>[0], getLang());
+      }
     },
   };
 };

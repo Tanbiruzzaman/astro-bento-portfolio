@@ -367,6 +367,28 @@ html {
   scrollbar-gutter: stable;
 }
 
+html[lang="bn"] body,
+html[lang="bn"] button,
+html[lang="bn"] input,
+html[lang="bn"] textarea {
+  font-family: var(--font-noto-sans-bengali), "Noto Sans Bengali", "Nirmala UI", "Vrinda", var(--font-satoshi), sans-serif;
+}
+
+html[lang="bn"] h1,
+html[lang="bn"] h2,
+html[lang="bn"] h3,
+html[lang="bn"] h4,
+html[lang="bn"] h5,
+html[lang="bn"] h6 {
+  font-family: var(--font-noto-sans-bengali), "Noto Sans Bengali", "Nirmala UI", "Vrinda", var(--font-cabinet-grotesk), sans-serif;
+}
+
+html[lang="bn"] .style-glass .card *,
+html[lang="bn"] .style-sharp .card *,
+html[lang="bn"] .style-neon .card * {
+  font-family: var(--font-noto-sans-bengali), "Noto Sans Bengali", "Nirmala UI", "Vrinda", var(--font-satoshi), sans-serif !important;
+}
+
 body {
   min-height: 100vh;
 }

@@ -11,6 +11,7 @@ interface Props {
   height: string;
   duration?: string;
   label: string;
+  labelKey?: string;
 }
 
 const {
@@ -23,6 +24,7 @@ const {
   height,
   duration = "2.4s",
   label,
+  labelKey,
   ...rest
 } = Astro.props;
 
@@ -41,6 +43,9 @@ if (SPRITE.COLS !== 6 || SPRITE.ROWS !== 4) {
   id={id}
   role="img"
   aria-label={label}
+  data-i18n-attr={labelKey ? `aria-label:${labelKey}` : undefined}
+  data-i18n-args={labelKey ? `name:author` : undefined}
+  data-author={labelKey ? label.match(/of (.*), slowly rotating/)?.[1] : undefined}
   class:list={[
     "avatar-sprite",
     levitate && "avatar-levitating",

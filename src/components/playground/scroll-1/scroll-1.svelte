@@ -7,6 +7,11 @@
   import ScrollTrigger from "gsap/dist/ScrollTrigger";
   import Lenis from "lenis";
   import { onMount } from "svelte";
+  import { langStore, type Lang } from "../../../i18n";
+
+  let lang: Lang = "en";
+
+  onMount(() => langStore.subscribe((value) => (lang = value)));
 
   onMount(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -62,7 +67,7 @@
 </script>
 
 <svelte:head>
-  <title>Home</title>
+  <title>{lang === "bn" ? "হোম" : "Home"}</title>
   <meta name="description" content="Svelte demo app" />
 </svelte:head>
 

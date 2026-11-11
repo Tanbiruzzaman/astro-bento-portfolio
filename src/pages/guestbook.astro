@@ -82,6 +82,8 @@ const newEntryPlaceholder: GuestbookEntry = {
 <Layout
   title={`${SITE.author.fullName} - Guestbook`}
   description="Leave a message in my guestbook"
+  titleBn={`${SITE.author.fullName} - অতিথির খাতা`}
+  descriptionBn="আমার অতিথির খাতায় একটি বার্তা লিখুন।"
 >
   <div class="flex flex-col items-center px-4 pt-8 pb-24">
     <div class="w-full max-w-3xl mb-16">
@@ -98,10 +100,10 @@ const newEntryPlaceholder: GuestbookEntry = {
       </div>
       <div class="relative z-10">
         <h1 class="text-white text-3xl font-bold tracking-tight mb-2">
-          Guestbook
+          <span data-i18n="guestbook.title">Guestbook</span>
         </h1>
         <p class="text-white text-sm leading-relaxed">
-          Drop a note, say hi, or share your thoughts. I read every message.
+          <span data-i18n="guestbook.intro">Drop a note, say hi, or share your thoughts. I read every message.</span>
         </p>
       </div>
     </Card>
@@ -110,7 +112,7 @@ const newEntryPlaceholder: GuestbookEntry = {
 
     <section class="w-full max-w-3xl">
       <h2 id="entries-count" class="text-white text-sm font-semibold mb-4">
-        {totalEntries} messages
+        <span data-i18n="guestbook.count" data-i18n-args="count:count" data-count={totalEntries}>{totalEntries} messages</span>
       </h2>
 
       <div id="entries" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -120,7 +122,7 @@ const newEntryPlaceholder: GuestbookEntry = {
               data-empty-state
               class="col-span-2 text-center py-20 text-darkslate-300 text-sm"
             >
-              No messages yet — be the first to leave one.
+            <span data-i18n="guestbook.empty">No messages yet — be the first to leave one.</span>
             </p>
           ) : (
             entries.map((entry) => (
@@ -154,6 +156,7 @@ const newEntryPlaceholder: GuestbookEntry = {
 <script>
   import { initCardGrids } from "../lib/card-grids";
   import { OWNER_HINT_COOKIE, replyLabel } from "../lib/guestbook";
+  import { applyTranslations, getLang, t } from "../i18n";
   import {
     createEntryElement,
     createFormStatus,
@@ -187,6 +190,7 @@ const newEntryPlaceholder: GuestbookEntry = {
       thread
         .querySelector("[data-reply-body]")
         ?.append(formTemplate.content.cloneNode(true));
+      applyTranslations(thread);
     });
   };
 
@@ -204,7 +208,7 @@ const newEntryPlaceholder: GuestbookEntry = {
 
     const message = (new FormData(form).get("message") ?? "").toString().trim();
     if (!message) {
-      showError("Message is required");
+      showError(t("guestbook.messageRequired", getLang()));
       return;
     }
 
@@ -222,7 +226,10 @@ const newEntryPlaceholder: GuestbookEntry = {
 
     const list = thread.querySelector("[data-reply-list]");
     const reply = createEntryElement("reply-template", result.entry);
-    if (list && reply) list.append(reply);
+    if (list && reply) {
+      list.append(reply);
+      applyTranslations(reply);
+    }
 
     const label = thread.querySelector("[data-reply-label]");
     if (list && label) label.textContent = replyLabel(list.children.length);

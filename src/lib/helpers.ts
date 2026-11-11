@@ -12,8 +12,8 @@ export function formatTimeTo12H(date: Date): string {
 
   return new Intl.DateTimeFormat("en-US", options).format(date);
 }
-export function formatDate(date: Date): string {
-  return date.toLocaleDateString("en-US", {
+export function formatDate(date: Date, locale = "en-US"): string {
+  return date.toLocaleDateString(locale, {
     year: "numeric",
     month: "long",
     day: "numeric",

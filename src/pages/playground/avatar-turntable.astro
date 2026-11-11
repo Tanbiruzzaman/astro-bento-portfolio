@@ -11,6 +11,8 @@ export const prerender = true;
 
 <PlaygroundShell
   title={`${SITE.author.fullName} - Playground - Avatar turntable`}
+  titleBn={`${SITE.author.fullName} - অবতার টার্নটেবল`}
+  descriptionBn="CSS sprite sheet হিসেবে অ্যানিমেট করা ২৪ ফ্রেমের 3D অবতার।"
   description="A 24-frame Blender render of my avatar, animated as a CSS spritesheet"
 >
   <div class="tt-stage checkerboard" id="tt-stage">
@@ -21,16 +23,17 @@ export const prerender = true;
         sheet={UNDITHERED_SHEET}
         height="var(--tt-height)"
         label="Avatar rotating 360 degrees"
+        labelKey="playground.turntableAlt"
       />
     </div>
 
     <p class="tt-readout">
-      <span id="tt-readout">24 frames &middot; 15&deg; per step</span>
+      <span id="tt-readout" data-i18n="playground.turntableReadout">24 frames &middot; 15&deg; per step</span>
     </p>
 
     <figure class="tt-sheet" id="tt-sheet" hidden>
-      <figcaption class="tt-label">
-        Spritesheet &mdash; {COLS} &times; {ROWS}
+    <figcaption class="tt-label">
+        <span data-i18n="playground.spriteSheet" data-i18n-args="dimensions:dimensions" data-dimensions={`${COLS} × ${ROWS}`}>Spritesheet &mdash; {COLS} &times; {ROWS}</span>
       </figcaption>
       <img
         src={UNDITHERED_SHEET}
@@ -111,6 +114,7 @@ export const prerender = true;
 
 <script>
   import { Pane } from "tweakpane";
+  import { getLang, t } from "../../i18n";
   import {
     SHEET_BY_NAME,
     SPRITE,
@@ -161,7 +165,11 @@ export const prerender = true;
       spin.classList.toggle("is-paused", !PARAMS.playing);
       if (PARAMS.playing) {
         spin.style.backgroundPosition = "";
-        readout.textContent = `${PARAMS.sheet} · ${FRAMES} frames · ${(360 / FRAMES).toFixed(0)}° per step`;
+        const number = (value: number) => new Intl.NumberFormat(getLang() === "bn" ? "bn-BD" : "en-US").format(value);
+        readout.textContent = t("playground.playingReadout", getLang())
+          .replace("{sheet}", PARAMS.sheet)
+          .replace("{frames}", number(FRAMES))
+          .replace("{step}", number(360 / FRAMES));
       } else {
         applyFrame();
       }
@@ -171,7 +179,10 @@ export const prerender = true;
       if (PARAMS.playing) return;
       spin.style.backgroundPosition = cellPosition(PARAMS.frame);
       const deg = Math.round((PARAMS.frame * 360) / FRAMES);
-      readout.textContent = `frame ${String(PARAMS.frame).padStart(2, "0")} · ${deg}°`;
+      const number = (value: number) => new Intl.NumberFormat(getLang() === "bn" ? "bn-BD" : "en-US", { minimumIntegerDigits: 2 }).format(value);
+      readout.textContent = t("playground.frameReadout", getLang())
+        .replace("{frame}", number(PARAMS.frame))
+        .replace("{degrees}", number(deg));
     };
 
     applySheet();
@@ -179,33 +190,37 @@ export const prerender = true;
     applyDuration();
     applyPlayback();
 
-    pane = new Pane({ title: "Turntable" });
+    function buildPane() {
+      pane?.dispose();
+      const lang = getLang();
+      pane = new Pane({ title: t("playground.turntable", lang) });
 
     pane
       .addBinding(PARAMS, "sheet", {
+        label: t("playground.sheet", lang),
         options: Object.fromEntries(Object.keys(SHEETS).map((k) => [k, k])),
       })
       .on("change", applySheet);
     pane
-      .addBinding(PARAMS, "size", { min: 96, max: 520, step: 4 })
+      .addBinding(PARAMS, "size", { label: t("playground.avatarSize", lang), min: 96, max: 520, step: 4 })
       .on("change", applySize);
     pane
       .addBinding(PARAMS, "duration", {
-        label: "duration (ms)",
+        label: t("playground.durationMs", lang),
         min: 400,
         max: 6000,
         step: 100,
       })
       .on("change", applyDuration);
-    pane.addBinding(PARAMS, "playing").on("change", () => {
+    pane.addBinding(PARAMS, "playing", { label: t("playground.playing", lang) }).on("change", () => {
       applyPlayback();
       pane?.refresh();
     });
-    pane.addBinding(PARAMS, "reversed").on("change", () => {
-      spin.classList.toggle("is-reversed", PARAMS.reversed);
+    pane.addBinding(PARAMS, "reversed", { label: t("playground.reversed", lang) }).on("change", () => {
+      spin?.classList.toggle("is-reversed", PARAMS.reversed);
     });
     pane
-      .addBinding(PARAMS, "frame", { min: 0, max: FRAMES - 1, step: 1 })
+      .addBinding(PARAMS, "frame", { label: t("playground.frame", lang), min: 0, max: FRAMES - 1, step: 1 })
       .on("change", () => {
         if (PARAMS.playing) {
           PARAMS.playing = false;
@@ -215,13 +230,24 @@ export const prerender = true;
         applyFrame();
       });
     pane
-      .addBinding(PARAMS, "showSheet", { label: "show sheet" })
+      .addBinding(PARAMS, "showSheet", { label: t("playground.showSheet", lang) })
       .on("change", () => {
         (sheet as HTMLElement).hidden = !PARAMS.showSheet;
       });
+    }
+    buildPane();
+    const onLanguageChange = () => {
+      buildPane();
+      applyPlayback();
+    };
+    document.addEventListener("languagechange", onLanguageChange);
+    languageChangeHandler = onLanguageChange;
   }
 
+  let languageChangeHandler: (() => void) | null = null;
   function disposeTurntable() {
+    if (languageChangeHandler) document.removeEventListener("languagechange", languageChangeHandler);
+    languageChangeHandler = null;
     pane?.dispose();
     pane = null;
   }

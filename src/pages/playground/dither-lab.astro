@@ -11,6 +11,8 @@ export const prerender = true;
 
 <PlaygroundShell
   title={`${SITE.author.fullName} - Playground - Dither lab`}
+  titleBn={`${SITE.author.fullName} - ডিথার ল্যাব`}
+  descriptionBn="ডিথার করা অবতারের রং ও অ্যানিমেশন সরাসরি পরিবর্তন করুন।"
   description="Interactive tuning for the dithered avatar turntable spritesheet"
   scrollable={true}
 >
@@ -18,7 +20,7 @@ export const prerender = true;
     <div class="dl-stage" id="dl-stage">
       <canvas id="dl-canvas" width={SPRITE.CELL_W} height={SPRITE.CELL_H}
       ></canvas>
-      <p class="dl-status" id="dl-status">loading {UNDITHERED_SHEET}&hellip;</p>
+      <p class="dl-status" id="dl-status" data-i18n="playground.loadingSheet" data-i18n-args="sheet:sheet" data-sheet={UNDITHERED_SHEET}>loading {UNDITHERED_SHEET}&hellip;</p>
     </div>
 
     <aside class="dl-side">
@@ -26,10 +28,10 @@ export const prerender = true;
 
       <section class="dl-block">
         <div class="dl-block-head">
-          <span class="dl-label">Palette</span>
+          <span class="dl-label" data-i18n="playground.palette">Palette</span>
           <span class="dl-actions">
-            <button id="dl-add" type="button">+ colour</button>
-            <button id="dl-reset" type="button">reset</button>
+            <button id="dl-add" type="button" data-i18n="playground.colour">+ colour</button>
+            <button id="dl-reset" type="button" data-i18n="playground.reset">reset</button>
           </span>
         </div>
         <ul class="dl-palette" id="dl-palette"></ul>
@@ -38,8 +40,8 @@ export const prerender = true;
 
       <section class="dl-block">
         <div class="dl-block-head">
-          <span class="dl-label">Command</span>
-          <button id="dl-copy" type="button">copy</button>
+          <span class="dl-label" data-i18n="playground.command">Command</span>
+          <button id="dl-copy" type="button" data-i18n="playground.copy">copy</button>
         </div>
         <pre id="dl-command"></pre>
       </section>
@@ -253,6 +255,7 @@ export const prerender = true;
 
 <script>
   import { Pane } from "tweakpane";
+  import { getLang, t } from "../../i18n";
   import { bleedEdges, ditherImage, luminance } from "../../lib/dither.mjs";
   import {
     SPRITE,
@@ -265,6 +268,7 @@ export const prerender = true;
   const HEX = /^#?[0-9a-f]{6}$/i;
 
   let pane: Pane | null = null;
+  let rebuildPane: (() => void) | null = null;
   let raf = 0;
   let timer = 0;
 
@@ -384,9 +388,17 @@ export const prerender = true;
       ctx.drawImage(toScratch(cache[index]!), 0, 0, w, h);
 
       const deg = Math.round((index * 360) / FRAMES);
-      status.textContent =
-        `frame ${String(index).padStart(2, "0")} · ${deg}° · ` +
-        `${palette.length} colours · bayer ${PARAMS.matrix}×${PARAMS.matrix}`;
+      status.dataset.i18n = "playground.frameStatus";
+      status.dataset.i18nArgs = "frame:frame,degrees:degrees,colors:colors,matrix:matrix";
+      status.dataset.frame = String(index).padStart(2, "0");
+      status.dataset.degrees = String(deg);
+      status.dataset.colors = String(palette.length);
+      status.dataset.matrix = String(PARAMS.matrix);
+      status.textContent = t("playground.frameStatus", getLang())
+        .replace("{frame}", status.dataset.frame)
+        .replace("{degrees}", String(deg))
+        .replace("{colors}", String(palette.length))
+        .replaceAll("{matrix}", String(PARAMS.matrix));
     }
 
     function invalidate() {
@@ -438,7 +450,8 @@ export const prerender = true;
         const swatch = document.createElement("input");
         swatch.type = "color";
         swatch.value = hex;
-        swatch.setAttribute("aria-label", `Colour ${index + 1}`);
+        const count = getLang() === "bn" ? new Intl.NumberFormat("bn-BD").format(index + 1) : String(index + 1);
+        swatch.setAttribute("aria-label", t("playground.colorIndex", getLang()).replace("{count}", count));
         swatch.addEventListener("input", () => {
           const next = [...palette];
           next[index] = swatch.value;
@@ -453,7 +466,7 @@ export const prerender = true;
         text.type = "text";
         text.value = hex;
         text.spellcheck = false;
-        text.setAttribute("aria-label", `Colour ${index + 1} hex`);
+        text.setAttribute("aria-label", t("playground.colorHexIndex", getLang()).replace("{count}", count));
         text.addEventListener("input", () => {
           if (!HEX.test(text.value.trim())) {
             text.setAttribute("aria-invalid", "true");
@@ -476,7 +489,7 @@ export const prerender = true;
         remove.type = "button";
         remove.textContent = "×";
         remove.disabled = palette.length <= MIN_COLORS;
-        remove.setAttribute("aria-label", `Remove colour ${index + 1}`);
+        remove.setAttribute("aria-label", t("playground.removeColor", getLang()).replace("{count}", count));
         remove.addEventListener("click", () =>
           setPalette(palette.filter((_, i) => i !== index)),
         );
@@ -503,12 +516,12 @@ export const prerender = true;
           pair = [sorted[i], sorted[i + 1]];
         }
       }
-      hint.innerHTML =
-        widest > WIDE_GAP
-          ? `Widest luminance gap is <b>${Math.round(widest)}</b>, between ` +
-            `${pair[0]} and ${pair[1]}. Tones in between snap to one end — ` +
-            `“+ colour” fills it.`
-          : "";
+      hint.textContent = widest > WIDE_GAP
+        ? t("playground.luminanceHint", getLang())
+            .replace("{gap}", String(Math.round(widest)))
+            .replace("{first}", pair[0])
+            .replace("{second}", pair[1])
+        : "";
     }
 
     function renderCommand() {
@@ -557,48 +570,53 @@ export const prerender = true;
       stage.classList.add(`bg-${PARAMS.background}`);
     }
 
-    pane = new Pane({
-      title: "Dither",
-      container: document.getElementById("dl-pane")!,
-    });
+    function buildPane() {
+      pane?.dispose();
+      const lang = getLang();
+      pane = new Pane({
+        title: t("playground.ditherPane", lang),
+        container: document.getElementById("dl-pane")!,
+      });
 
     pane
       .addBinding(PARAMS, "theme", {
-        options: Object.fromEntries(Object.keys(PALETTES).map((k) => [k, k])),
+        label: t("playground.themeLabel", lang),
+        options: Object.fromEntries(Object.keys(PALETTES).map((key) => [t(`theme.${key}` as Parameters<typeof t>[0], lang), key])),
       })
       .on("change", () => setPalette([...PALETTES[PARAMS.theme]]));
 
-    const tone = pane.addFolder({ title: "tone" });
+    const tone = pane.addFolder({ title: t("playground.tone", lang) });
     tone
-      .addBinding(PARAMS, "brightness", { min: -128, max: 128, step: 1 })
+      .addBinding(PARAMS, "brightness", { label: t("playground.brightness", lang), min: -128, max: 128, step: 1 })
       .on("change", invalidate);
     tone
-      .addBinding(PARAMS, "contrast", { min: 0.4, max: 2.5, step: 0.05 })
+      .addBinding(PARAMS, "contrast", { label: t("playground.contrast", lang), min: 0.4, max: 2.5, step: 0.05 })
       .on("change", invalidate);
 
-    const grain = pane.addFolder({ title: "grain" });
+    const grain = pane.addFolder({ title: t("playground.grain", lang) });
     grain
       .addBinding(PARAMS, "matrix", {
+        label: t("playground.matrixSize", lang),
         options: { "2×2": 2, "4×4": 4, "8×8": 8 },
       })
       .on("change", invalidate);
     grain
       .addBinding(PARAMS, "block", {
-        label: "dot size",
+        label: t("playground.dotSize", lang),
         min: 1,
         max: 4,
         step: 1,
       })
       .on("change", invalidate);
     grain
-      .addBinding(PARAMS, "ordered", { label: "dither" })
+      .addBinding(PARAMS, "ordered", { label: t("playground.orderedDither", lang) })
       .on("change", invalidate);
 
-    const view = pane.addFolder({ title: "view" });
-    view.addBinding(PARAMS, "animate").on("change", animate);
-    view.addBinding(PARAMS, "duration", { min: 400, max: 6000, step: 100 });
+    const view = pane.addFolder({ title: t("playground.view", lang) });
+    view.addBinding(PARAMS, "animate", { label: t("playground.animate", lang) }).on("change", animate);
+    view.addBinding(PARAMS, "duration", { label: t("playground.durationMs", lang), min: 400, max: 6000, step: 100 });
     view
-      .addBinding(PARAMS, "frame", { min: 0, max: FRAMES - 1, step: 1 })
+      .addBinding(PARAMS, "frame", { label: t("playground.frame", lang), min: 0, max: FRAMES - 1, step: 1 })
       .on("change", () => {
         if (PARAMS.animate) {
           PARAMS.animate = false;
@@ -608,13 +626,28 @@ export const prerender = true;
         draw(PARAMS.frame);
       });
     view
-      .addBinding(PARAMS, "zoom", { min: 0.4, max: 2.5, step: 0.05 })
+      .addBinding(PARAMS, "zoom", { label: t("playground.zoom", lang), min: 0.4, max: 2.5, step: 0.05 })
       .on("change", () => draw(PARAMS.frame));
     view
       .addBinding(PARAMS, "background", {
-        options: { dark: "dark", light: "light", checker: "checker" },
+        label: t("playground.background", lang),
+        options: {
+          [t("playground.bgDark", lang)]: "dark",
+          [t("playground.bgLight", lang)]: "light",
+          [t("playground.bgChecker", lang)]: "checker",
+        },
       })
       .on("change", applyBackground);
+    }
+    buildPane();
+    rebuildPane = buildPane;
+    const onLanguageChange = () => {
+      buildPane();
+      renderPalette();
+      if (!PARAMS.animate) draw(PARAMS.frame);
+    };
+    rebuildPane = onLanguageChange;
+    document.addEventListener("languagechange", onLanguageChange);
 
     addButton.addEventListener("click", addColour);
     resetButton.addEventListener("click", () =>
@@ -622,8 +655,8 @@ export const prerender = true;
     );
     copyButton.addEventListener("click", async () => {
       await navigator.clipboard.writeText(command.textContent || "");
-      copyButton.textContent = "copied";
-      window.setTimeout(() => (copyButton.textContent = "copy"), 1200);
+      copyButton.textContent = t("playground.copied", getLang());
+      window.setTimeout(() => (copyButton.textContent = t("playground.copy", getLang())), 1200);
     });
 
     applyBackground();
@@ -656,12 +689,17 @@ export const prerender = true;
       animate();
     };
     img.onerror = () => {
-      status.textContent = `could not load ${SHEET}`;
+      status.dataset.i18n = "playground.loadFailed";
+      status.dataset.i18nArgs = "sheet:sheet";
+      status.dataset.sheet = SHEET;
+      status.textContent = t("playground.loadFailed", getLang()).replace("{sheet}", SHEET);
     };
     img.src = SHEET;
   }
 
   function disposeLab() {
+    if (rebuildPane) document.removeEventListener("languagechange", rebuildPane);
+    rebuildPane = null;
     cancelAnimationFrame(raf);
     window.clearTimeout(timer);
     pane?.dispose();

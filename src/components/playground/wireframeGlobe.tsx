@@ -5,6 +5,7 @@ import {
   onCleanup,
   type Component,
 } from "solid-js";
+import { createLangSignal, t } from "../../i18n";
 
 export interface WireframeGlobeProps {
   size?: number;
@@ -22,6 +23,7 @@ export interface WireframeGlobeProps {
 }
 
 const WireframeGlobe: Component<WireframeGlobeProps> = (props) => {
+  const lang = createLangSignal();
   const merged = mergeProps(
     {
       size: 300,
@@ -206,7 +208,7 @@ const WireframeGlobe: Component<WireframeGlobeProps> = (props) => {
     <canvas
       ref={setCanvasEl}
       class="block"
-      aria-label="Rotating wireframe globe"
+      aria-label={t("playground.wireframe", lang())}
     />
   );
 };
