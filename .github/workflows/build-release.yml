@@ -19,7 +19,7 @@ jobs:
       - run: pnpm build
         env:
           TURSO_DATABASE_URL: file:./build-dummy.db
-          SITE_URL: https://yourdomain.com
+          SITE_URL: https://tanbir.bd
       - run: pnpm install --prod --frozen-lockfile
       - run: tar czf app.tar.gz dist node_modules package.json
       - run: gh release create "build-${{ github.run_number }}" app.tar.gz --title "Build ${{ github.run_number }}" --notes "Automated build"
