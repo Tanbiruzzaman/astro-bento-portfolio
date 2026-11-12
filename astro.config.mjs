@@ -1,7 +1,6 @@
 import { defineConfig, envField, fontProviders } from "astro/config";
 import sitemap from "@astrojs/sitemap";
-import netlify from "@astrojs/netlify";
-import { cacheNetlify } from "@astrojs/netlify/cache";
+import node from "@astrojs/node";
 import robotsTxt from "astro-robots-txt";
 import UnoCSS from "@unocss/astro";
 import icon from "astro-icon";
@@ -102,10 +101,7 @@ export default defineConfig({
     },
   },
   output: "server",
-  adapter: netlify({ middlewareMode: "edge" }),
-  cache: {
-    provider: cacheNetlify(),
-  },
+  adapter: node({ mode: "standalone" }),
   vite: {
     assetsInclude: "**/*.riv",
   },

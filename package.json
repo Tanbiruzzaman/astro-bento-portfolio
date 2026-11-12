@@ -4,7 +4,7 @@
   "version": "0.0.2",
   "scripts": {
     "dev": "astro dev",
-    "start": "astro dev",
+    "start": "HOST=0.0.0.0 PORT=3000 node ./dist/server/entry.mjs",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
@@ -13,13 +13,12 @@
     "check": "astro check",
     "format": "prettier --write \"src/**/*.{astro,ts,tsx,js,jsx,css,md}\"",
     "prepare": "husky",
-    "serve:dist": "python3 -m http.server 4322 --directory dist",
-    "preview:netlify": "netlify dev"
+    "serve:dist": "python3 -m http.server 4322 --directory dist"
   },
   "dependencies": {
     "@astrojs/check": "0.9.12",
     "@astrojs/markdown-remark": "7.3.5",
-    "@astrojs/netlify": "8.2.10",
+    "@astrojs/node": "11.1.12",
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.4",
     "@astrojs/solid-js": "7.1.2",
@@ -38,6 +37,7 @@
     "mdast-util-to-string": "^4.0.0",
     "motion": "^12.43.0",
     "reading-time": "^1.5.0",
+    "sharp": "^0.35.5",
     "solid-js": "^1.9.14",
     "svelte": "^5.56.8",
     "three": "^0.185.1",
