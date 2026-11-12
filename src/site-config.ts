@@ -1,4 +1,4 @@
-export const DOMAIN = "gianmarcocavallo.com";
+export const DOMAIN = "tanbir.bd";
 
 export const SITE = {
   site: {
@@ -6,43 +6,30 @@ export const SITE = {
     url: `https://${DOMAIN}/`,
   },
   author: {
-    firstName: "Gianmarco",
-    lastName: "Cavallo",
-    fullName: "Gianmarco Cavallo",
-    shortName: "Gianmarco",
-    jobTitle: "Freelance Full Stack Developer",
-    twitterHandle: "gianmarcocavallo", // without "@"
+    firstName: "Tanbiruzzaman",
+    lastName: "",
+    fullName: "Tanbiruzzaman",
+    shortName: "Tanbir",
+    jobTitle: "Open-Knowledge lover",
+    twitterHandle: "the_tanbir", // without "@"
   },
   location: {
-    countryName: "Italy",
-    countryCode: "IT",
-    timezone: "Europe/Rome",
+    countryName: "Bangladesh",
+    countryCode: "BD",
+    timezone: "Asia/Dhaka",
   },
   links: {
-    github: "https://github.com/Ladvace",
-    repo: "https://github.com/Ladvace/astro-bento-portfolio",
-    linkedin: "https://www.linkedin.com/in/gianmarco-cavallo/",
-    medium: "https://ladvace.medium.com/",
-    dribbble: "https://dribbble.com/Ladvace_Jace",
-    behance: "https://www.behance.net/Ladvace",
-    email: `contact@${DOMAIN}`,
+    github: "https://github.com/Tanbiruzzaman",
+    repo: "https://github.com/Tanbiruzzaman/astro-bento-portfolio",
+    linkedin: "https://www.linkedin.com/in/tanbiruzzaman/",
+    medium: "",
+    dribbble: "",
+    behance: "",
+    email: `i@${DOMAIN}`,
   },
   visitedCountries: [
-    "France",
-    "China",
-    "Italy",
-    "Sri Lanka",
-    "Uzbekistan",
-    "Turkey",
-    "Greece",
-    "Malta",
-    "Hungary",
-    "Portugal",
-    "Morocco",
-    "Greece",
-    "Spain",
-    "Netherlands",
-    "Belgium",
-    "Spain",
+    "United States of Noakhali",
+    "United Kingdom of Cumilla",
+    "Great Barisal (not Brittan, sorry)",
   ],
 };
