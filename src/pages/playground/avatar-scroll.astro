@@ -7,14 +7,16 @@ export const prerender = true;
 
 <PlaygroundShell
   title={`${SITE.author.fullName} - Playground - Avatar scroll`}
+  titleBn={`${SITE.author.fullName} - অবতার স্ক্রল`}
+  descriptionBn="Three.js glass shader-এ তৈরি Blender অবতার স্ক্রল অ্যানিমেশন।"
   description="The Blender avatar as a glass shader, walked from the right edge to centre by wheel"
   floatingBack
 >
   <div class="scroll-stage" id="scroll-stage">
     <div class="scroll-canvas" id="scroll-canvas"></div>
-    <p class="scroll-status" id="scroll-status">Loading model…</p>
+    <p class="scroll-status" id="scroll-status" data-i18n="playground.loadingModel">Loading model…</p>
     <p class="scroll-readout">
-      <span id="scroll-readout">scroll to rotate</span>
+      <span id="scroll-readout" data-i18n="playground.scrollRotate">scroll to rotate</span>
     </p>
     <div class="scroll-progress" aria-hidden="true">
       <span id="scroll-bar"></span>
@@ -110,6 +112,7 @@ export const prerender = true;
   import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
   import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.js";
   import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
+  import { getLang, t } from "../../i18n";
 
   const FOV = 35;
   /** 1 = model centre sits on a viewport edge, so half of it is visible. */
@@ -197,7 +200,10 @@ export const prerender = true;
       const gltf = await loader.loadAsync("/avatar-lotus.glb");
       model = gltf.scene;
     } catch (error) {
-      if (status) status.textContent = "Could not load the model.";
+      if (status) {
+        status.dataset.i18n = "playground.loadModelFailed";
+        status.textContent = t("playground.loadModelFailed", getLang());
+      }
       console.error("[avatar-scroll]", error);
       renderer.dispose();
       return;

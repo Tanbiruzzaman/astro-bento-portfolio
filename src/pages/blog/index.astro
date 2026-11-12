@@ -9,14 +9,16 @@ export const prerender = true;
 <Layout
   description="Software developer with strong focus on the user experience animations and micro interactions"
   title={`${SITE.author.fullName} - Blog`}
+  titleBn={`${SITE.author.fullName} - ব্লগ`}
+  descriptionBn="ব্যবহারকারীর অভিজ্ঞতা, অ্যানিমেশন ও মাইক্রো-ইন্টারঅ্যাকশন নিয়ে সফটওয়্যার ডেভেলপারের লেখা।"
 >
   <main
     class="w-screen h-screen flex flex-col justify-start items-start max-w-3xl mx-auto p-8"
   >
     <BackLink href="/" class="mb-8" />
-    <h1 class="text-4xl font-bold mb-4 text-neutral-100">Posts</h1>
+    <h1 class="text-4xl font-bold mb-4 text-neutral-100" data-i18n="blog.posts">Posts</h1>
     <p class="text-darkslate-300 text-sm">
-      Nothing to say right now... check back later (or don't, no pressure 🙃)
+      <span data-i18n="common.nothingToSay">Nothing to say right now... check back later (or don't, no pressure 🙃)</span>
     </p>
   </main>
 </Layout>

@@ -1,6 +1,7 @@
 import * as riveCanvasModule from "@rive-app/canvas";
 import type { StateMachineInput } from "@rive-app/canvas";
 import { createSignal, onCleanup, onMount } from "solid-js";
+import { createLangSignal, t, type TranslationKey } from "../../i18n";
 
 const riveCjsExports = riveCanvasModule as Record<string, unknown> & {
   default?: Record<string, unknown>;
@@ -12,10 +13,12 @@ const { Rive, Layout, Fit, Alignment } = (
 const rifleDesignAspectRatio = 950 / 540;
 
 export default function Rifle1(props: { rivUrl: string }) {
+  const lang = createLangSignal();
   const [canvasElement, setCanvasElement] =
     createSignal<HTMLCanvasElement | null>(null);
   const [drawWidth, setDrawWidth] = createSignal(950);
   const [loadMessage, setLoadMessage] = createSignal<string | null>(null);
+  const [loadError, setLoadError] = createSignal<TranslationKey>("playground.riveLoadFailed");
 
   onMount(() => {
     let riveInstance: InstanceType<typeof Rive> | undefined;
@@ -32,14 +35,16 @@ export default function Rifle1(props: { rivUrl: string }) {
 
     const { rivUrl } = props;
     if (!rivUrl) {
-      setLoadMessage("Missing animation URL.");
+      setLoadError("playground.missingRiveUrl");
+      setLoadMessage("error");
       return;
     }
 
     queueMicrotask(() => {
       const canvas = canvasElement();
       if (!canvas) {
-        setLoadMessage("Canvas not ready.");
+        setLoadError("playground.canvasNotReady");
+        setLoadMessage("error");
         return;
       }
       try {
@@ -69,12 +74,15 @@ export default function Rifle1(props: { rivUrl: string }) {
               );
             }
           },
-          onLoadError: () => setLoadMessage("Could not load the Rive file."),
+          onLoadError: () => {
+            setLoadError("playground.riveLoadFailed");
+            setLoadMessage("error");
+          },
         });
       } catch (error) {
-        setLoadMessage(
-          error instanceof Error ? error.message : "Failed to load",
-        );
+        console.error("[rifle-animation]", error);
+        setLoadError("playground.riveLoadFailed");
+        setLoadMessage("error");
       }
     });
 
@@ -96,23 +104,20 @@ export default function Rifle1(props: { rivUrl: string }) {
 
   return (
     <div class="flex flex-col justify-center w-fit h-fit text-white p-4">
-      <h1>Rifle animation</h1>
+      <h1>{t("playground.rifle", lang())}</h1>
       <p>
         Interactive animation made in rive.app using an illustration made by me
       </p>
-      <p>
-        click on the rifle or on the <span class="font-bold">S</span> and on the{" "}
-        <span class="font-bold">R</span> to reload
-      </p>
+      <p>{t("playground.rifleInstructions", lang())}</p>
 
       {loadMessage() === null ? (
-        <p class="text-neutral-400 text-sm mb-2" aria-live="polite">
-          Loading animation…
+          <p class="text-neutral-400 text-sm mb-2" aria-live="polite">
+            {t("home.loadingAnimation", lang())}
         </p>
       ) : null}
       {loadMessage() && loadMessage()!.length > 0 ? (
         <p class="text-red-400 text-sm mb-2" role="alert">
-          {loadMessage()!}
+          {t(loadError(), lang())}
         </p>
       ) : null}
 
@@ -123,7 +128,7 @@ export default function Rifle1(props: { rivUrl: string }) {
             id="keep-shooting"
             name="continuous-shooting"
           />
-          <label for="keep-shooting">Continuous Shooting</label>
+          <label for="keep-shooting">{t("playground.continuousShooting", lang())}</label>
         </div>
         <div
           class={loadMessage() === null ? "opacity-40 pointer-events-none" : ""}

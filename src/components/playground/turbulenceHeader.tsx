@@ -1,26 +1,32 @@
 import { createSignal, For } from "solid-js";
+import { createLangSignal, t } from "../../i18n";
 
 const turbulenceHeader = () => {
+  const lang = createLangSignal();
   const [selectedRouted, setSelectedRoute] = createSignal("Home");
 
   const routes = [
     {
       path: "/Home",
       label: "Home",
+      key: "common.home",
     },
     {
       path: "/about",
       label: "About",
+      key: "common.about",
     },
     {
       path: "/curriculum",
       label: "Curriculum",
+      key: "common.curriculum",
     },
     {
       path: "/community",
       label: "Community",
+      key: "common.community",
     },
-  ];
+  ] as const;
 
   let ref!: HTMLDivElement;
 
@@ -78,7 +84,7 @@ const turbulenceHeader = () => {
                     setSelectedRoute(route.label);
                   }}
                 >
-                  {route.label}
+                  {t(route.key, lang())}
                 </button>
               )}
             </For>

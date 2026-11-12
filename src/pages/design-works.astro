@@ -56,6 +56,8 @@ export const prerender = true;
 <Layout
   title={`${SITE.author.fullName} - Design works`}
   description="A collection of some of my design works"
+  titleBn={`${SITE.author.fullName} - ডিজাইনের কাজ`}
+  descriptionBn="আমার করা কিছু ডিজাইন কাজের সংগ্রহ।"
   hideSoundToggle={true}
 >
   <div
@@ -80,8 +82,8 @@ export const prerender = true;
   <main class="w-full max-w-5xl mx-auto px-6 py-10 text-white">
     <BackLink href="/" class="mb-8" />
 
-    <h1 class="text-4xl font-bold mb-2">Design works</h1>
-    <p class="text-darkslate-300 text-sm mb-10">
+    <h1 class="text-4xl font-bold mb-2" data-i18n="common.designWorks">Design works</h1>
+    <p class="text-darkslate-300 text-sm mb-10" data-i18n="home.designIntro">
       Illustrations, logos, explorations and graphic work I've done over the
       years.
     </p>

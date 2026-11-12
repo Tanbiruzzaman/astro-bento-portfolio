@@ -11,6 +11,8 @@ export const prerender = true;
 
 <Layout
   title={`${SITE.author.fullName} - Playground - MorphSVG wipe`}
+  titleBn={`${SITE.author.fullName} - MorphSVG ওয়াইপ`}
+  descriptionBn="GSAP MorphSVG দিয়ে তৈরি পূর্ণ-পর্দার SVG transition।"
   description="Full-screen SVG path morph wipe with GSAP MorphSVGPlugin."
 >
   <div class="morph-wipe-page w-full self-stretch">
@@ -19,10 +21,9 @@ export const prerender = true;
     </header>
 
     <p class="hint">
-      <strong>MorphSVG</strong>: full-screen overlay SVG. Pick a variant, then
-      run the wipe.
+      <strong>MorphSVG</strong><span data-i18n="playground.wipeDescription">: full-screen overlay SVG. Pick a variant, then run the wipe.</span>
     </p>
-    <div class="variant-controls" role="radiogroup" aria-label="Wipe variant">
+      <div class="variant-controls" role="radiogroup" aria-label="Wipe variant" data-i18n-attr="aria-label:playground.wipeVariant">
       {
         WIPE_VARIANT_LIST.map((v, i) => (
           <button
@@ -30,6 +31,7 @@ export const prerender = true;
             class="morph-variant-btn"
             data-variant-id={v.id}
             aria-pressed={i === 0 ? "true" : "false"}
+            data-i18n={v.id === "classic" ? "playground.variantClassic" : "playground.variantAsymmetric"}
           >
             {v.label}
           </button>
@@ -38,9 +40,9 @@ export const prerender = true;
     </div>
 
     <div class="controls">
-      <button type="button" id="btn-wipe-in">Wipe in (cover)</button>
-      <button type="button" id="btn-wipe-out">Wipe out (reveal)</button>
-      <button type="button" id="btn-wipe-full">Full cycle</button>
+      <button type="button" id="btn-wipe-in" data-i18n="playground.wipeIn">Wipe in (cover)</button>
+      <button type="button" id="btn-wipe-out" data-i18n="playground.wipeOut">Wipe out (reveal)</button>
+      <button type="button" id="btn-wipe-full" data-i18n="playground.fullCycle">Full cycle</button>
     </div>
 
     <div class="transition__morph__svg" id="morph-overlay" aria-hidden="true">

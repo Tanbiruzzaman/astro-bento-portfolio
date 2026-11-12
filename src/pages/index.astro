@@ -29,6 +29,8 @@ export const prerender = true;
 <Layout
   description={`I'm a developer based in ${SITE.location.countryName}, passionate about user experience and specializing in engaging animations and micro-interactions. My primary tools of choice include: JavaScript, React, Solid.js, Astro, Svelte, and Node.js.`}
   title={`${SITE.author.fullName} - ${SITE.author.jobTitle}`}
+  titleBn={`${SITE.author.fullName} - ফ্রিল্যান্স ফুল-স্ট্যাক ডেভেলপার`}
+  descriptionBn="আমি ইতালিতে বসবাসকারী একজন ডেভেলপার। ব্যবহারকারীর অভিজ্ঞতা, আকর্ষণীয় অ্যানিমেশন ও মাইক্রো-ইন্টারঅ্যাকশনে আমার বিশেষ আগ্রহ। আমার পছন্দের প্রযুক্তি JavaScript, React, Solid.js, Astro, Svelte ও Node.js।"
 >
   <main
     class="text-white m-auto p-2 grid gap-2 max-w-6xl overflow-x-hidden relative w-full sm:p-4 sm:gap-2 md:grid-cols-2 md:gap-3 md:p-6 lg:h-[max(100dvh,720px)] lg:grid-rows-8 lg:grid-cols-4 lg:gap-4"
@@ -44,7 +46,7 @@ export const prerender = true;
         <div id="playground-grid" class="absolute inset-0"></div>
       </div>
       <div class="flex-1 flex items-center">
-        <h2 class="text-xl md:text-2xl lg:text-xl font-bold m-0">Playground</h2>
+        <h2 class="text-xl md:text-2xl lg:text-xl font-bold m-0" data-i18n="common.playground">Playground</h2>
       </div>
     </Card>
     <Card
@@ -61,7 +63,7 @@ export const prerender = true;
       >
       </div>
       <div class="flex-1 flex items-center">
-        <h2 class="text-xl md:text-2xl lg:text-xl font-bold m-0">Guestbook</h2>
+        <h2 class="text-xl md:text-2xl lg:text-xl font-bold m-0" data-i18n="common.guestbook">Guestbook</h2>
       </div>
     </Card>
     <Card href="/blog" colSpan="md:col-span-1" rowSpan="md:row-span-1">
@@ -73,7 +75,7 @@ export const prerender = true;
       >
       </div>
       <div class="flex-1 flex items-center">
-        <h2 class="text-xl md:text-2xl lg:text-xl font-bold m-0">Blog</h2>
+        <h2 class="text-xl md:text-2xl lg:text-xl font-bold m-0" data-i18n="common.blog">Blog</h2>
       </div>
     </Card>
     <Card colSpan="md:col-span-1" href="travel" rowSpan="md:row-span-1">
@@ -82,7 +84,7 @@ export const prerender = true;
           <Globe client:visible scale={24} />
         </div>
         <h2 class="text-lg font-bold m-0 relative z-20 -ml-5 min-w-0">
-          Countries I visited
+          <span data-i18n="common.countries">Countries I visited</span>
         </h2>
       </div>
     </Card>
@@ -90,11 +92,11 @@ export const prerender = true;
     <Card colSpan="md:col-span-1" rowSpan="md:row-span-1">
       <div class="flex h-full items-center justify-center">
         <p class="text-3xs text-center whitespace-nowrap">
-          © {new Date().getFullYear()} · Crafted with <PixelHeart /> using <a
+          © {new Date().getFullYear()} · <span data-i18n="home.craftedWith">Crafted with</span> <PixelHeart /> <span data-i18n="common.using">using</span> <a
             class="text-red-500"
             href="https://astro.build/"
             target="_blank">Astro</a
-          > by Me.
+          ><span data-i18n="home.byMe">by Me.</span>
         </p>
       </div>
     </Card>

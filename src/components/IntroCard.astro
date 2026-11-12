@@ -9,73 +9,59 @@ import AvatarSprite from "./AvatarSprite.astro";
 
 <Card colSpan="md:col-span-3" rowSpan="md:row-span-4" class="pad-lg">
   <div class="flex w-full h-full items-center">
-    <div class="flex flex-col justify-between gap-4">
+    <div class="flex min-w-0 w-full flex-col justify-between gap-4">
       <div class="flex flex-col h-full">
-        <h6 class="text-sm font-light m-0 text-darkslate-300">welcome</h6>
+        <h6 class="text-sm font-light m-0 text-darkslate-300" data-i18n="home.welcome">welcome</h6>
 
-        <p class="sr-only">
-          Hi, I'm {SITE.author.fullName}, a full-stack developer
-          (frontend-leaning) with a good eye for design. I've worked across
-          startups, consultancy agencies and corporate companies, often as the
-          bridge between designers and engineers. If you have a project in mind,
-          want to collaborate, or just want to say hello, I'd love to hear from
-          you. Beyond coding, I'm passionate about design, illustration,
-          animation, photography, and parametric 3D modelling. I love
-          travelling, and I have an unusual hobby of collecting vintage
-          passports, fascinating pieces of history.
-        </p>
-        <p aria-hidden="true" class="m-0 font-light text-base">
-          <span>
-            Hi, I'm <b class="font-bold">{SITE.author.fullName}</b>, a
-            full-stack developer (frontend-leaning) with a good eye for design.
+        <p class="m-0 font-light text-base max-w-[65ch] break-words">
+          <span data-i18n="home.aboutIntro" data-i18n-args="name:author" data-author={SITE.author.fullName}>
+            Hi, I'm {SITE.author.fullName}, a full-stack developer (frontend-leaning) with a good eye for design.
           </span>
-          <br />
-          <span class="block mt-2">
-            I've worked across startups, consultancy agencies and corporate
-            companies, often as the bridge between designers and engineers.
+          <span class="block mt-2" data-i18n="home.aboutExperience">
+            I've worked across startups, consultancy agencies and corporate companies, often as the bridge between designers and engineers.
           </span>
-          <span class="block mt-2">
-            If you have a project in mind, want to collaborate, or just want to
-            say hello, I'd love to hear from you.
+          <span class="block mt-2" data-i18n="home.aboutContact">
+            If you have a project in mind, want to collaborate, or just want to say hello, I'd love to hear from you.
           </span>
-          <span class="block mt-2">
-            Beyond coding, I'm passionate about design, illustration, animation,
-            photography, and parametric 3D modelling. I love travelling, and I
-            collect vintage passports.
+          <span class="block mt-2" data-i18n="home.aboutInterests">
+            Beyond coding, I'm passionate about design, illustration, animation, photography, and parametric 3D modelling. I love travelling, and I collect vintage passports.
           </span>
         </p>
       </div>
       <div class="flex flex-col lg:flex-row gap-2 lg:gap-4">
         <div class="flex gap-2 lg:gap-4">
           <a
+            id="github-profile-link"
             href={SITE.links.github}
-            aria-label="github profile"
+            aria-label="GitHub Profile"
+            data-i18n-attr="aria-label:home.githubProfile"
             target="_blank"
           >
-            <Button aria-label="github profile">
+            <Button aria-label="GitHub Profile" data-i18n-attr="aria-label:home.githubProfile">
               <Icon name="pixel-github" />
               <span class="sr-only" data-umami-event="github button"
-                >GitHub Profile</span
+                data-i18n="home.githubProfile">GitHub Profile</span
               >
             </Button>
           </a>
           <a
             href={SITE.links.linkedin}
-            aria-label="linkedin profile"
+            aria-label="LinkedIn Profile"
+            data-i18n-attr="aria-label:home.linkedinProfile"
             target="_blank"
           >
-            <Button aria-label="linkedin profile">
+            <Button aria-label="LinkedIn Profile" data-i18n-attr="aria-label:home.linkedinProfile">
               <Icon name="pixel-linkedin" />
               <span class="sr-only" data-umami-event="linkedin button"
-                >Linkedin Profile</span
+                data-i18n="home.linkedinProfile">Linkedin Profile</span
               >
             </Button>
           </a>
           <Tooltip client:visible>
-            <Button aria-label="easter egg btn">
+            <Button aria-label="Easter egg button" data-i18n-attr="aria-label:home.easterEgg">
               <Icon name="pixel-laugh" />
               <span class="sr-only" data-umami-event="Easter egg button"
-                >Easter egg button</span
+                data-i18n="home.easterEgg">Easter egg button</span
               >
             </Button>
           </Tooltip>
@@ -93,6 +79,7 @@ import AvatarSprite from "./AvatarSprite.astro";
         spinOnReveal
         height="270px"
         label={`memoji of ${SITE.author.firstName}, slowly rotating`}
+        labelKey="controls.avatarAlt"
         class="select-none absolute right-[-110px] bottom-[-20px] z-[-1] opacity-50 md:opacity-100 md:relative md:right-auto md:bottom-auto md:z-auto pointer-events-none md:pointer-events-auto"
       />
       <Icon

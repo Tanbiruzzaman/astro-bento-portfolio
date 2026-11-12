@@ -51,10 +51,10 @@ const heartCount = entry.heartCount ?? 0;
   }
   {
     entry.parentId !== null && (
-      <span class="text-primary-400 text-xs font-semibold">Author</span>
+      <span class="text-primary-400 text-xs font-semibold" data-i18n="guestbook.author">Author</span>
     )
   }
-  <span class="text-darkslate-300 text-xs">{postedAgo}</span>
+  <time class="text-darkslate-300 text-xs" data-created-at={new Date(entry.createdAt).toISOString()}>{postedAgo}</time>
 </div>
 <button
   type="button"
@@ -62,6 +62,7 @@ const heartCount = entry.heartCount ?? 0;
   data-heart-count={heartCount}
   aria-label="Send love"
   title="Send love"
+  data-i18n-attr="aria-label:guestbook.love,title:guestbook.love"
   class="heart-btn flex items-center gap-1 px-2 py-1 rounded-md text-darkslate-300 hover:text-white hover:bg-darkslate-400/30 transition-colors text-xs"
 >
   <Fragment set:html={PIXEL_HEART_SVG} />

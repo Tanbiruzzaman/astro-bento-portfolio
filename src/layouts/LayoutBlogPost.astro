@@ -8,19 +8,21 @@ type Props = {
   description: string;
   pubDate: Date;
   minutesRead: string;
+  titleBn?: string;
+  descriptionBn?: string;
 };
 
-const { title, description, pubDate, minutesRead } = Astro.props;
+const { title, description, pubDate, minutesRead, titleBn, descriptionBn } = Astro.props;
 ---
 
-<BasicLayout description={description} page="blog" title={title}>
+<BasicLayout description={description} page="blog" title={title} titleBn={titleBn} descriptionBn={descriptionBn}>
   <main class="mx-auto max-w-3xl w-full h-screen p-8 text-neutral-100">
     <BackLink href="/blog" class="mb-8" />
     <div class="my-10">
-      <h1 class="text-5xl font-semibold">{title}</h1>
+        <h1 class="text-5xl font-semibold" data-entry-title-en={title} data-entry-title-bn={titleBn}>{title}</h1>
       <div class="flex justify-between pt-4 text-gray-500 text-sm">
-        <p>{formatDate(pubDate)}</p>
-        <p>{minutesRead}</p>
+        <time data-date={pubDate.toISOString()}>{formatDate(pubDate)}</time>
+        <p data-reading-time={minutesRead}>{minutesRead}</p>
       </div>
     </div>
     <article class="prose prose-p:text-red-500 prose-slate prose-invert">

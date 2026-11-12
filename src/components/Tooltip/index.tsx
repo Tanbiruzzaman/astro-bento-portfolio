@@ -1,4 +1,5 @@
 import { type JSX, Show, createSignal } from "solid-js";
+import { createLangSignal, t, type TranslationKey } from "../../i18n";
 
 type Props = {
   children?: JSX.Element;
@@ -6,41 +7,13 @@ type Props = {
 };
 
 function Tooltip(props: Props) {
+  const lang = createLangSignal();
   const [isVisible, setIsVisible] = createSignal(false);
   const [clickCount, setClickCount] = createSignal<number>(0);
 
-  const messages = [
-    "Hi there!",
-    "Clicked again?",
-    "Still here?",
-    "Persistent, aren't you?",
-    "What's up?",
-    "Again? Really?",
-    "You're curious!",
-    "Not cool!",
-    "Give it a break!",
-    "That's annoying!",
-    "Hands off!",
-    "No more clicks!",
-    "Seriously?!",
-    "Ouch! That hurts!",
-    "You're persistent!",
-    "Why the curiosity?",
-    "I'm getting tired!",
-    "I'm bored!",
-    "Enough's enough!",
-    "Find another hobby!",
-    "Stop, please!",
-    "Okay, last one!",
-    "That's it, I'm done!",
-  ];
-
   const currentMessage = () => {
     const count = clickCount();
-    if (count >= messages.length) {
-      return messages[messages.length - 1];
-    }
-    return messages[count];
+    return t(`tooltip.message${Math.min(count, 22) + 1}` as TranslationKey, lang());
   };
 
   return (

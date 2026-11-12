@@ -15,6 +15,7 @@ const BTN = `style-btn ${BTN_BASE}`;
     id="style-panel-toggle"
     class="style-btn w-full flex-1 min-h-9 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/5 transition-all duration-200 outline-none"
     aria-label="Toggle style panel"
+    data-i18n-attr="aria-label:controls.toggleStyles,title:controls.styles"
     title="Styles"
   >
     <Icon
@@ -53,6 +54,7 @@ const BTN = `style-btn ${BTN_BASE}`;
           data-label={label}
           aria-label={`${label} style`}
           title={label}
+          data-i18n-attr={`aria-label:controls.${id === "default" ? "defaultStyle" : id.slice(6) + "Style"},title:controls.${id === "default" ? "defaultStyle" : id.slice(6) + "Style"}`}
         >
           <StyleGlyph index={i} />
           <span class="absolute top-1 right-1.5 text-4xs opacity-40 leading-none">
@@ -67,6 +69,7 @@ const BTN = `style-btn ${BTN_BASE}`;
       id="border-toggle"
       class={BTN_BASE}
       aria-label="Toggle custom card border"
+      data-i18n-attr="aria-label:controls.customBorder"
       aria-pressed="false"
       title="Custom card border"
     >
@@ -98,6 +101,7 @@ const BTN = `style-btn ${BTN_BASE}`;
     isCustomBorder,
     STYLES,
   } from "../lib/appearance";
+  import { getLang, t } from "../i18n";
 
   function updateStyleBtns() {
     const saved = localStorage.getItem("portfolioStyle");
@@ -118,10 +122,10 @@ const BTN = `style-btn ${BTN_BASE}`;
 
     document.querySelectorAll<HTMLElement>(".style-btn").forEach((btn) => {
       if (!btn.dataset.style) return;
+      const labelKey = btn.dataset.i18nAttr?.split(",")[0]?.split(":")[1];
+      const label = labelKey ? t(labelKey as Parameters<typeof t>[0], getLang()) : (btn.dataset.label ?? "");
       btn.classList.toggle("opacity-40", custom);
-      btn.title = custom
-        ? `${btn.dataset.label} — switches off the custom border`
-        : (btn.dataset.label ?? "");
+      btn.title = custom ? `${label} — ${t("controls.turnOffBorder", getLang())}` : label;
     });
 
     const toggle = document.getElementById("border-toggle");
@@ -130,8 +134,8 @@ const BTN = `style-btn ${BTN_BASE}`;
     toggle?.setAttribute("aria-pressed", String(custom));
     if (toggle)
       toggle.title = custom
-        ? "Custom card border: on"
-        : "Custom card border: off";
+        ? t("controls.customBorderOn", getLang())
+        : t("controls.customBorderOff", getLang());
   }
 
   function switchBorderMode() {
@@ -171,6 +175,8 @@ const BTN = `style-btn ${BTN_BASE}`;
     applyBorderMode((e as unknown as { newDocument: Document }).newDocument);
     document.body.classList.remove("ns-js-shape");
   });
+
+  document.addEventListener("languagechange", () => applyBorderMode());
 
   document.addEventListener("astro:page-load", () => {
     applyBorderMode();

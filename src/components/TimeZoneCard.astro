@@ -15,6 +15,7 @@ const homeTzAbbr =
 
 <script>
   import { getCurrentTimeInTimezone } from "../lib/helpers";
+  import { getLang, t } from "../i18n";
 
   let interval: ReturnType<typeof setInterval>;
   let homeTimezone = "";
@@ -31,7 +32,8 @@ const homeTzAbbr =
 
   function uses24HourFormat(): boolean {
     if (use24HourOverride !== null) return use24HourOverride;
-    const formatter = new Intl.DateTimeFormat(navigator.language, {
+    const locale = getLang() === "bn" ? "bn-BD" : navigator.language;
+    const formatter = new Intl.DateTimeFormat(locale, {
       hour: "numeric",
     });
     const parts = formatter.formatToParts(new Date());
@@ -44,7 +46,7 @@ const homeTzAbbr =
     timezone: string,
     use24Hour: boolean,
   ): string {
-    return new Intl.DateTimeFormat(navigator.language, {
+    return new Intl.DateTimeFormat(getLang() === "bn" ? "bn-BD" : navigator.language, {
       hour: "numeric",
       minute: "2-digit",
       hour12: !use24Hour,
@@ -53,7 +55,7 @@ const homeTzAbbr =
   }
 
   function getTimezoneAbbreviation(timezone: string): string {
-    const parts = new Intl.DateTimeFormat("en-US", {
+    const parts = new Intl.DateTimeFormat(getLang() === "bn" ? "bn-BD" : "en-US", {
       timeZone: timezone,
       timeZoneName: "short",
     }).formatToParts(new Date());
@@ -74,12 +76,12 @@ const homeTzAbbr =
     if (diff > 720) diff -= 1440;
     if (diff < -720) diff += 1440;
 
-    if (diff === 0) return "same timezone";
+    if (diff === 0) return t("home.sameTimezone", getLang());
     const abs = Math.abs(diff);
     const h = Math.floor(abs / 60);
     const m = abs % 60;
     const label = m > 0 ? `${h}h ${m}m` : `${h}h`;
-    return diff > 0 ? `${label} ahead of you` : `${label} behind you`;
+    return t(diff > 0 ? "home.aheadOfYou" : "home.behindYou", getLang()).replace("{time}", label);
   }
 
   let italyTimeDisplay: HTMLElement | null = null;
@@ -154,6 +156,11 @@ const homeTzAbbr =
   document.addEventListener("astro:before-swap", () => {
     clearInterval(interval);
   });
+
+  document.addEventListener("languagechange", () => {
+    updateClock();
+    updateToggleLabel();
+  });
 </script>
 
 <Card
@@ -173,6 +180,7 @@ const homeTzAbbr =
         ></span>
         <span
           class="text-3xs font-medium uppercase tracking-widest text-darkslate-300"
+          data-i18n="home.inCountry" data-i18n-args="country:country" data-country={SITE.location.countryName}
           >in {SITE.location.countryName}</span
         >
         <button
@@ -203,7 +211,7 @@ const homeTzAbbr =
       <div class="flex-1 h-px bg-darkslate-400 opacity-40"></div>
       <span
         id="offsetDisplay"
-        class="inline-block min-w-[13ch] text-center text-3xs text-darkslate-300 whitespace-nowrap"
+        class="inline-block min-w-[20ch] text-center text-3xs text-darkslate-300 whitespace-nowrap"
         >&nbsp;</span
       >
       <div class="flex-1 h-px bg-darkslate-400 opacity-40"></div>
@@ -215,7 +223,7 @@ const homeTzAbbr =
     >
       <span
         class="text-3xs font-medium uppercase tracking-widest text-darkslate-300"
-        >where you are</span
+        data-i18n="home.whereYouAre">where you are</span
       >
       <time
         datetime=""

@@ -44,7 +44,7 @@ const SHAFT =
     class="github-star-hint-label"
     aria-hidden="true"
   />
-  <span class="sr-only">Leave a GitHub star</span>
+  <span class="sr-only" data-i18n="home.leaveStar">Leave a GitHub star</span>
 </a>
 
 <style>
@@ -170,7 +170,7 @@ const SHAFT =
   function initGithubStarHint() {
     const hint = document.getElementById("github-star-hint");
     const target = document.querySelector<HTMLElement>(
-      'a[aria-label="github profile"]',
+      "#github-profile-link",
     );
     const card = target?.closest<HTMLElement>(".card");
     const root = document.documentElement;

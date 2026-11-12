@@ -16,7 +16,7 @@ const { class: className } = Astro.props;
     <summary
       class="flex items-center justify-between text-white cursor-pointer list-none"
     >
-      <span class="text-xl font-bold">Leave a message</span>
+      <span class="text-xl font-bold" data-i18n="guestbook.leaveMessage">Leave a message</span>
       <Icon
         name="pixel-plus"
         class="w-4 h-4 text-darkslate-300 group-hover:text-white transition-[color,transform] duration-200 group-open:rotate-45"
@@ -26,7 +26,7 @@ const { class: className } = Astro.props;
     <form id="guestbook-form" class="pt-5 flex flex-col gap-3">
       <div class="flex gap-3">
         <label class="flex-1">
-          <span class="block text-xs text-darkslate-300 mb-1.5">Name *</span>
+          <span class="block text-xs text-darkslate-300 mb-1.5" data-i18n="guestbook.nameRequiredLabel">Name *</span>
           <input
             type="text"
             name="name"
@@ -34,10 +34,11 @@ const { class: className } = Astro.props;
             maxlength="100"
             class={inputClasses}
             placeholder="Your name"
+            data-i18n-attr="placeholder:guestbook.yourName"
           />
         </label>
         <label class="flex-1">
-          <span class="block text-xs text-darkslate-300 mb-1.5">Website</span>
+          <span class="block text-xs text-darkslate-300 mb-1.5" data-i18n="guestbook.website">Website</span>
           <input
             type="url"
             name="website"
@@ -49,20 +50,21 @@ const { class: className } = Astro.props;
       </div>
 
       <label>
-        <span class="block text-xs text-darkslate-300 mb-1.5">Message *</span>
+        <span class="block text-xs text-darkslate-300 mb-1.5" data-i18n="guestbook.messageRequiredLabel">Message *</span>
         <textarea
           name="message"
           required
           maxlength="1000"
           rows="3"
           class:list={[inputClasses, "resize-none"]}
-          placeholder="Say something..."></textarea>
+          placeholder="Say something..."
+          data-i18n-attr="placeholder:guestbook.saySomething"></textarea>
       </label>
 
       <p data-form-error class="text-red-400 text-xs hidden"></p>
 
       <div class="self-end">
-        <Button type="submit" size="sm">Send</Button>
+        <Button type="submit" size="sm"><span data-i18n="guestbook.send">Send</span></Button>
       </div>
     </form>
   </details>
@@ -70,6 +72,7 @@ const { class: className } = Astro.props;
 
 <script>
   import { rotationFromSeed } from "../../lib/guestbook";
+  import { getLang, t, applyTranslations } from "../../i18n";
   import {
     createEntryElement,
     createFormStatus,
@@ -89,14 +92,22 @@ const { class: className } = Astro.props;
 
     entriesGrid.querySelector("[data-empty-state]")?.remove();
     entriesGrid.prepend(card);
+    applyTranslations(card);
     document.dispatchEvent(new Event("guestbook:entry-added"));
   };
 
   const incrementEntriesCount = (): void => {
     const entriesCountHeading = document.getElementById("entries-count");
     if (!entriesCountHeading) return;
-    const nextCount = parseInt(entriesCountHeading.textContent ?? "0", 10) + 1;
-    entriesCountHeading.textContent = `${nextCount} messages`;
+    const count = entriesCountHeading.querySelector<HTMLElement>("[data-i18n-args]");
+    const nextCount = Number(count?.dataset.count ?? 0) + 1;
+    if (count) count.dataset.count = String(nextCount);
+    if (count) {
+      const displayCount = getLang() === "bn"
+        ? new Intl.NumberFormat("bn-BD").format(nextCount)
+        : String(nextCount);
+      count.textContent = t("guestbook.count", getLang()).replace("{count}", displayCount);
+    }
   };
 
   function attachFormHandler(): void {
@@ -114,7 +125,7 @@ const { class: className } = Astro.props;
 
       const submission = readGuestbookSubmission(form);
       if (!submission.name || !submission.message) {
-        showError("Name and message are required");
+        showError(t("guestbook.formRequired", getLang()));
         return;
       }
 
